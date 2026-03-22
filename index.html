@@ -2,90 +2,89 @@
 <html lang="de">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>ClickerX — Red Cookie</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>ClickerX — Mobile Ready Cookie</title>
 <style>
   :root{
     --bg:#041018;
     --panel:#0d1620;
     --muted:#9aa4b2;
     --accent:#ff3b3b;
-    --accent-2:#ff8b8b;
     --accent-dark:#b82a2a;
     --glass:rgba(255,255,255,0.03);
-    --ok:#7cff7c;
-    --locked:#3b3f46;
     --gold:#ffd86b;
   }
-  *{box-sizing:border-box}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:
     radial-gradient(1200px 600px at 10% 10%, rgba(255,59,59,0.04), transparent),
-    linear-gradient(180deg,#021018,#00060a);color:#eaf2ff}
-  .wrap{max-width:1200px;margin:22px auto;padding:20px}
-  header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-  h1{margin:0;font-size:20px;letter-spacing:0.6px}
-  .stats{display:flex;gap:12px;align-items:center}
-  .stat{background:linear-gradient(180deg,var(--glass),transparent);padding:10px 14px;border-radius:10px;color:var(--muted);font-size:13px;border:1px solid rgba(255,255,255,0.02)}
-  .big{font-size:26px;color:#fff;font-weight:800}
-  .layout{display:grid;grid-template-columns:480px 1fr;gap:16px}
-  .panel{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 10px 30px rgba(0,0,0,0.5)}
-  #clickerArea{display:flex;flex-direction:column;align-items:center;gap:12px}
-  /* cookie button */
+    linear-gradient(180deg,#021018,#00060a);color:#eaf2ff;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1100px;margin:18px auto;padding:16px}
+  header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  h1{margin:0;font-size:18px}
+  .stats{display:flex;gap:10px;align-items:center}
+  .stat{background:linear-gradient(180deg,var(--glass),transparent);padding:8px 12px;border-radius:10px;color:var(--muted);font-size:13px;border:1px solid rgba(255,255,255,0.02)}
+  .big{font-size:22px;color:#fff;font-weight:800}
+  .layout{display:grid;grid-template-columns:1fr;gap:12px}
+  .panel{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 8px 24px rgba(0,0,0,0.5)}
+  #clickerArea{display:flex;flex-direction:column;align-items:center;gap:12px;touch-action:none}
+  /* cookie button (improved visuals) */
   #bigBtn{
-    width:320px;height:320px;border-radius:50%;background:
-      radial-gradient(circle at 30% 30%, #ffdca8 0%, #f2b86b 40%, #d18b3a 100%);
-    border:8px solid rgba(255,255,255,0.06);
-    color:#2b1600;font-size:28px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;
-    box-shadow:0 28px 70px rgba(0,0,0,0.35), inset 0 -12px 36px rgba(0,0,0,0.12);
+    width:220px;height:220px;border-radius:50%;background:
+      radial-gradient(circle at 30% 30%, #fff0d0 0%, #ffd08a 40%, #d18b3a 100%);
+    border:6px solid rgba(255,255,255,0.06);
+    color:#2b1600;font-size:26px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 18px 48px rgba(0,0,0,0.35), inset 0 -10px 28px rgba(0,0,0,0.12);
     transition:transform .08s ease, box-shadow .12s ease;position:relative;overflow:hidden;
+    -webkit-user-select:none;user-select:none;
   }
   #bigBtn:active{transform:scale(0.98)}
+  /* chocolate chips */
   #bigBtn .chip{position:absolute;width:18px;height:12px;border-radius:3px;background:#6b3b1a;box-shadow:inset 0 -2px 0 rgba(0,0,0,0.2)}
-  /* chips positions */
-  #bigBtn .c1{left:22%;top:28%;transform:rotate(-12deg)}
-  #bigBtn .c2{left:58%;top:22%;transform:rotate(18deg)}
-  #bigBtn .c3{left:40%;top:56%;transform:rotate(-6deg)}
-  #bigBtn .c4{left:68%;top:52%;transform:rotate(10deg)}
-  /* pulse ring */
+  #bigBtn .c1{left:20%;top:26%;transform:rotate(-12deg)}
+  #bigBtn .c2{left:56%;top:20%;transform:rotate(18deg)}
+  #bigBtn .c3{left:38%;top:54%;transform:rotate(-6deg)}
+  #bigBtn .c4{left:68%;top:50%;transform:rotate(10deg)}
+  /* subtle shine */
   #bigBtn::after{content:"";position:absolute;inset:-8px;border-radius:50%;box-shadow:0 0 0 0 rgba(255,200,120,0.06);animation:cookiePulse 2.6s infinite}
-  @keyframes cookiePulse{0%{box-shadow:0 0 0 0 rgba(255,200,120,0.06)}70%{box-shadow:0 0 0 44px rgba(255,200,120,0)}100%{box-shadow:0 0 0 0 rgba(255,200,120,0)}}
-  .mini{display:flex;gap:12px;align-items:center}
+  @keyframes cookiePulse{0%{box-shadow:0 0 0 0 rgba(255,200,120,0.06)}70%{box-shadow:0 0 0 36px rgba(255,200,120,0)}100%{box-shadow:0 0 0 0 rgba(255,200,120,0)}}
+  .mini{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
   .controls{display:flex;gap:8px;flex-wrap:wrap}
   .btn{background:var(--glass);border:1px solid rgba(255,255,255,0.03);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
   .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-dark));color:#fff;font-weight:700}
-  .shop{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;max-height:76vh;overflow:auto;padding-right:6px}
-  .item{position:relative;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:8px;transition:transform .12s, box-shadow .12s, opacity .12s}
+  .shop{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;max-height:48vh;overflow:auto;padding-right:6px}
+  .item{position:relative;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:6px;transition:transform .12s, box-shadow .12s, opacity .12s}
   .item.locked{opacity:0.45;filter:grayscale(60%);background:linear-gradient(180deg,rgba(0,0,0,0.02),transparent);border-color:rgba(255,255,255,0.01)}
   .item.affordable{box-shadow:0 10px 30px rgba(124,255,124,0.06);border-color:rgba(124,255,124,0.06)}
   .row{display:flex;justify-content:space-between;align-items:center}
-  .name{font-weight:800;color:#fff}
-  .desc{color:var(--muted);font-size:13px}
+  .name{font-weight:800;color:#fff;font-size:14px}
+  .desc{color:var(--muted);font-size:12px}
   .cost{color:var(--muted);font-size:13px}
   .count{color:var(--accent);font-weight:800}
   .count-bump{animation:bump .36s ease}
   @keyframes bump{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
-  .flair-sparkle::before{content:"";position:absolute;left:10px;top:8px;font-size:12px;color:rgba(255,255,255,0.06)}
-  /* animations for item types */
-  .anim-gear .anim-el{width:28px;height:28px;border-radius:4px;background:linear-gradient(180deg,#cfcfcf,#9b9b9b);margin-left:auto;animation:spin 3s linear infinite}
+  /* small per-item animations */
+  .anim-gear .anim-el{width:22px;height:22px;border-radius:4px;background:linear-gradient(180deg,#cfcfcf,#9b9b9b);margin-left:auto;animation:spin 3s linear infinite}
   @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
-  .anim-flame .anim-el{width:28px;height:28px;margin-left:auto;background:linear-gradient(180deg,#ffb86b,#ff6b3b);border-radius:6px;animation:flame 1.2s infinite}
+  .anim-flame .anim-el{width:22px;height:22px;margin-left:auto;background:linear-gradient(180deg,#ffb86b,#ff6b3b);border-radius:6px;animation:flame 1.2s infinite}
   @keyframes flame{0%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-6px) scaleY(1.08)}100%{transform:translateY(0) scaleY(1)}}
-  .anim-orb .anim-el{width:28px;height:28px;margin-left:auto;border-radius:50%;background:radial-gradient(circle,#9be6ff,#3b9cff);box-shadow:0 6px 18px rgba(59,156,255,0.12);animation:orb 2.4s infinite}
+  .anim-orb .anim-el{width:22px;height:22px;margin-left:auto;border-radius:50%;background:radial-gradient(circle,#9be6ff,#3b9cff);box-shadow:0 6px 18px rgba(59,156,255,0.12);animation:orb 2.4s infinite}
   @keyframes orb{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
-  .anim-spark .anim-el{width:28px;height:28px;margin-left:auto;background:linear-gradient(90deg,#fff,#ffd86b);border-radius:6px;animation:spark 1.6s infinite}
+  .anim-spark .anim-el{width:22px;height:22px;margin-left:auto;background:linear-gradient(90deg,#fff,#ffd86b);border-radius:6px;animation:spark 1.6s infinite}
   @keyframes spark{0%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(12deg)}100%{transform:translateY(0) rotate(0)}}
-  .golden{position:fixed;left:50%;transform:translateX(-50%);top:-80px;width:64px;height:64px;border-radius:12px;background:linear-gradient(180deg,#fff0b8,#ffd86b);box-shadow:0 12px 30px rgba(255,200,80,0.25);display:flex;align-items:center;justify-content:center;font-weight:800;color:#6b3b00;cursor:pointer;z-index:9999;animation:fall 6s linear forwards}
-  @keyframes fall{0%{top:-120px;opacity:0}10%{opacity:1}90%{top:110vh;opacity:1}100%{top:110vh;opacity:0}}
+  /* golden cookie */
+  .golden{position:fixed;left:50%;transform:translateX(-50%);top:-120px;width:64px;height:64px;border-radius:12px;background:linear-gradient(180deg,#fff0b8,#ffd86b);box-shadow:0 12px 30px rgba(255,200,80,0.25);display:flex;align-items:center;justify-content:center;font-weight:800;color:#6b3b00;cursor:pointer;z-index:9999;animation:fall 6s linear forwards;touch-action:none}
+  @keyframes fall{0%{top:-160px;opacity:0}10%{opacity:1}90%{top:110vh;opacity:1}100%{top:110vh;opacity:0}}
   .golden .shine{position:absolute;inset:0;border-radius:12px;box-shadow:inset 0 10px 30px rgba(255,255,255,0.25);opacity:0.6}
-  .mult-banner{position:fixed;left:50%;transform:translateX(-50%);top:18px;background:linear-gradient(90deg,#ffd86b,#ffb86b);padding:10px 18px;border-radius:10px;color:#3b1a00;font-weight:800;box-shadow:0 8px 30px rgba(0,0,0,0.4);z-index:10000;display:none}
+  .mult-banner{position:fixed;left:50%;transform:translateX(-50%);top:12px;background:linear-gradient(90deg,#ffd86b,#ffb86b);padding:8px 14px;border-radius:10px;color:#3b1a00;font-weight:800;box-shadow:0 8px 30px rgba(0,0,0,0.4);z-index:10000;display:none}
   .mult-active{display:block}
   .small-muted{font-size:13px;color:var(--muted)}
-  footer{margin-top:14px;text-align:center;color:var(--muted);font-size:13px}
-  @media (max-width:980px){ .layout{grid-template-columns:1fr} #bigBtn{width:220px;height:220px} .shop{max-height:48vh} }
+  footer{margin-top:12px;text-align:center;color:var(--muted);font-size:13px}
+  @media (min-width:900px){ .layout{grid-template-columns:420px 1fr} .shop{max-height:72vh} }
+  @media (max-width:420px){ #bigBtn{width:180px;height:180px} .golden{width:56px;height:56px} }
 </style>
 </head>
 <body>
-  <div class="wrap">
+  <div class="wrap" id="wrap">
     <header>
       <h1>ClickerX — Red Cookie</h1>
       <div class="stats">
@@ -97,8 +96,8 @@
     <div class="layout">
       <div class="panel" id="clickerPanel">
         <div id="clickerArea">
-          <button id="bigBtn" aria-label="Großer Cookie">
-            <span style="font-size:18px">🍪</span>
+          <button id="bigBtn" aria-label="Großer Cookie" type="button">
+            <span style="font-size:34px">🍪</span>
             <div class="chip c1"></div><div class="chip c2"></div><div class="chip c3"></div><div class="chip c4"></div>
           </button>
 
@@ -122,7 +121,7 @@
           </div>
 
           <div style="width:100%;margin-top:8px">
-            <div class="hint">Goldene Kekse regnen jede Minute. Klick sie für einen zufälligen Cookie‑Multiplikator (1–100) für 20s.</div>
+            <div class="small-muted">Goldene Kekse regnen jede Minute. Klick sie für einen zufälligen Cookie‑Multiplikator (1–100) für 20s.</div>
           </div>
         </div>
       </div>
@@ -139,7 +138,7 @@
           </div>
         </div>
 
-        <div id="shop" class="shop"></div>
+        <div id="shop" class="shop" aria-live="polite"></div>
       </div>
     </div>
 
@@ -151,28 +150,38 @@
   <div id="multBanner" class="mult-banner">x<span id="multVal">1</span> Cookie‑Boost aktiv!</div>
 
 <script>
-/* ClickerX — polished with per-item animations, golden cookie rain, random multiplier.
-   Single-file. Save as index.html and open in browser.
+/* Mobile-ready ClickerX — single file
+   - pointerdown/touch friendly
+   - golden cookie rain every 60s (first after 10s)
+   - golden gives random multiplier 1..100 for 20s
+   - per-item small animations
+   - affordability greying + glow
+   - limited floating texts for performance
 */
 
-const SAVE_KEY = 'clickerx_polished_gold_v2';
+const SAVE_KEY = 'clickerx_mobile_v1';
 const SHOP_COUNT = 100;
 let state = {
   total: 0,
   cookies: 0,
-  perClick: 1,
+  basePerClick: 1,    // base per click (unchanged by golden)
+  perClick: 1,        // effective per click (base * multiplier)
   bonus: 0,
   cps: 0,
   items: [],
   lastTick: Date.now()
 };
 
-// multiplier state
+// golden multiplier state
 let goldenActive = false;
 let goldenMultiplier = 1;
 let goldenTimeout = null;
 
-// formatting
+// floating text pool limit
+const MAX_FLOATS = 6;
+let activeFloats = 0;
+
+// formatting helpers
 function fmtShort(n){
   if(n >= 1e12) return (n/1e12).toFixed(2)+'T';
   if(n >= 1e9) return (n/1e9).toFixed(2)+'B';
@@ -194,7 +203,7 @@ const CREATIVE_NAMES = [
   "Pocket Blackhole","Candy Forge","Dream Mill","Aurora Tray","Zen Garden"
 ];
 
-// generate shop with special flags and animation types
+// generate shop
 function genShop(){
   const items = [];
   for(let i=1;i<=SHOP_COUNT;i++){
@@ -202,9 +211,8 @@ function genShop(){
     const base = Math.max(5, Math.round(Math.pow(1.17, i) * (8 + i*4)));
     const cps = parseFloat((Math.pow(1.07, i) * (0.05 + i*0.04)).toFixed(3));
     const special = {};
-    if(i === 1) special.autoClickRatePerCount = 0.5; // auto-clicks per second per unit
+    if(i === 1) special.autoClickRatePerCount = 0.5; // clicks/sec per unit
     if(i === 5) special.bonusPerCount = 0.02;
-    // assign animation type by pattern
     let anim = 'anim-spark';
     if(i % 7 === 0) anim = 'anim-gear';
     if(i % 5 === 0) anim = 'anim-flame';
@@ -215,7 +223,7 @@ function genShop(){
   return items;
 }
 
-// UI render
+// render shop
 function renderShop(filter='', sortBy='cost'){
   const shop = document.getElementById('shop');
   shop.innerHTML = '';
@@ -234,7 +242,6 @@ function renderShop(filter='', sortBy='cost'){
     const div = document.createElement('div');
     const affordable = state.cookies >= it.cost;
     div.className = 'item ' + (affordable ? 'affordable' : 'locked');
-    // description
     let desc = '';
     if(it.special && it.special.autoClickRatePerCount){
       desc = `Auto‑clicks: +${it.special.autoClickRatePerCount}/s per unit`;
@@ -243,8 +250,7 @@ function renderShop(filter='', sortBy='cost'){
     } else {
       desc = `Generates ${it.cps} CPS each`;
     }
-    // animation element
-    const animHtml = `<div class="anim-el" style="margin-left:auto"></div>`;
+    const animHtml = `<div class="anim-el" aria-hidden="true"></div>`;
     const flairHtml = it.flair ? `<div style="position:absolute;right:10px;top:8px;color:rgba(255,255,255,0.06);font-size:12px">✦</div>` : '';
     div.innerHTML = `
       ${flairHtml}
@@ -257,7 +263,6 @@ function renderShop(filter='', sortBy='cost'){
       </div>
       ${animHtml}
     `;
-    // add animation class
     div.classList.add(it.anim);
     shop.appendChild(div);
   }
@@ -268,11 +273,10 @@ function updateUI(){
   document.getElementById('totalDisplay').textContent = fmtDisplay(state.total);
   document.getElementById('cpsDisplay').textContent = state.cps.toFixed(2);
   document.getElementById('cookieDisplay').textContent = fmtDisplay(state.cookies);
-  document.getElementById('perClick').textContent = state.perClick;
+  document.getElementById('perClick').textContent = (state.basePerClick * goldenMultiplier).toFixed(2);
   document.getElementById('bonus').textContent = state.bonus;
   document.getElementById('ownedSummary').textContent = `Addons: ${state.items.reduce((s,i)=>s+i.count,0)}`;
 
-  // update visible items and affordability classes
   document.querySelectorAll('#shop .item').forEach(el=>{
     const countEl = el.querySelector('.count');
     if(!countEl) return;
@@ -295,7 +299,7 @@ function updateUI(){
   });
 }
 
-// game logic
+// recalc cps
 function recalcCPS(){
   let base = state.items.reduce((s,it)=>s + it.cps * it.count, 0);
   for(const it of state.items){
@@ -306,15 +310,15 @@ function recalcCPS(){
   state.cps = base + state.bonus;
 }
 
-// auto-click contribution (special item 1)
+// auto-click contribution
 function autoClickContribution(dt){
   const it = state.items.find(x=>x.special && x.special.autoClickRatePerCount);
   if(!it) return 0;
-  const rate = it.count * (it.special.autoClickRatePerCount || 0); // clicks per second
-  // auto-clicks produce perClick each; apply golden multiplier to perClick via current perClick value
-  return rate * state.perClick * dt;
+  const rate = it.count * (it.special.autoClickRatePerCount || 0); // clicks/sec
+  return rate * state.basePerClick * goldenMultiplier * dt;
 }
 
+// tick loop
 function tick(){
   const now = Date.now();
   const dt = (now - state.lastTick) / 1000;
@@ -329,34 +333,40 @@ function tick(){
   requestAnimationFrame(tick);
 }
 
-// click handling
+// floating text (limited)
+function showFloat(text, parent){
+  if(activeFloats >= MAX_FLOATS) return;
+  activeFloats++;
+  const el = document.createElement('div');
+  el.textContent = text;
+  el.style.position = 'absolute';
+  el.style.left = '50%';
+  el.style.top = '12%';
+  el.style.transform = 'translateX(-50%)';
+  el.style.color = '#6b3b1a';
+  el.style.fontWeight = '900';
+  el.style.pointerEvents = 'none';
+  el.style.textShadow = '0 2px 8px rgba(0,0,0,0.6)';
+  el.style.fontSize = '16px';
+  parent.appendChild(el);
+  el.animate([{opacity:1, transform:'translateY(0)'},{opacity:0, transform:'translateY(-48px)'}],{duration:700}).onfinish = ()=>{
+    el.remove();
+    activeFloats--;
+  };
+}
+
+// click handling (pointerdown for mobile)
 function doClick(){
-  const gain = state.perClick;
+  const gain = state.basePerClick * goldenMultiplier;
   state.cookies += gain;
   state.total += gain;
-
-  // button animation + floating text
   const bigBtn = document.getElementById('bigBtn');
   bigBtn.animate([{transform:'scale(1)'},{transform:'scale(1.06)'},{transform:'scale(1)'}],{duration:140,easing:'cubic-bezier(.2,.8,.2,1)'});
-
-  const flash = document.createElement('div');
-  flash.textContent = `+${gain * (goldenActive ? goldenMultiplier : 1)}`;
-  flash.style.position = 'absolute';
-  flash.style.top = '12%';
-  flash.style.left = '50%';
-  flash.style.transform = 'translateX(-50%)';
-  flash.style.color = '#6b3b1a';
-  flash.style.fontWeight = '900';
-  flash.style.pointerEvents = 'none';
-  flash.style.textShadow = '0 2px 8px rgba(0,0,0,0.6)';
-  flash.style.fontSize = '18px';
-  bigBtn.appendChild(flash);
-  flash.animate([{opacity:1, transform:'translateY(0)'},{opacity:0, transform:'translateY(-48px)'}],{duration:700}).onfinish = ()=> flash.remove();
-
+  showFloat('+' + Number(gain).toFixed(2), bigBtn);
   updateUI();
 }
 
-// buying
+// buy logic
 function buyItem(id, qty=1){
   const it = state.items.find(x=>x.id===id);
   if(!it) return;
@@ -371,7 +381,6 @@ function buyItem(id, qty=1){
   }
   if(bought>0){
     recalcCPS();
-    // bump animation
     const countEl = document.querySelector(`#shop .count[data-id="${id}"]`);
     if(countEl){
       countEl.classList.remove('count-bump');
@@ -411,7 +420,7 @@ function buyMaxAll(){
   if(totalBought>0){ recalcCPS(); updateUI(); }
 }
 
-// golden cookie: spawn every 60s
+// golden cookie spawn
 function spawnGolden(){
   const el = document.createElement('div');
   el.className = 'golden';
@@ -419,15 +428,16 @@ function spawnGolden(){
   document.body.appendChild(el);
   // remove after animation ends (6s)
   setTimeout(()=>{ if(el.parentNode) el.parentNode.removeChild(el); }, 6200);
-  el.addEventListener('click', ()=>{
-    // apply random multiplier 1..100 for 20s
+  // pointerdown for mobile responsiveness
+  el.addEventListener('pointerdown', (e)=>{
+    e.preventDefault();
     const mult = Math.floor(Math.random()*100) + 1;
     activateGolden(mult);
-    // pop effect
+    // small pop
     el.style.transform = 'translateX(-50%) scale(1.2)';
     el.style.opacity = '0';
     setTimeout(()=>{ if(el.parentNode) el.parentNode.removeChild(el); }, 300);
-  });
+  }, {passive:false});
 }
 
 // activate golden multiplier
@@ -435,19 +445,17 @@ function activateGolden(mult){
   if(goldenTimeout) clearTimeout(goldenTimeout);
   goldenActive = true;
   goldenMultiplier = mult;
-  // apply multiplier to perClick visually by multiplying displayed perClick (we keep base perClick in state.perClickBase if needed)
-  // We'll temporarily multiply state.perClick for 20s
-  state.perClick = state.perClick * mult;
   document.getElementById('multVal').textContent = mult;
   document.getElementById('multBanner').classList.add('mult-active');
+  // show small toast
+  const wrap = document.getElementById('wrap');
+  showFloat('Golden x' + mult + '!', wrap);
   goldenTimeout = setTimeout(()=>{ deactivateGolden(); }, 20000);
+  updateUI();
 }
 
 // deactivate golden
 function deactivateGolden(){
-  if(!goldenActive) return;
-  // revert perClick by dividing by multiplier
-  state.perClick = state.perClick / goldenMultiplier;
   goldenActive = false;
   goldenMultiplier = 1;
   document.getElementById('multBanner').classList.remove('mult-active');
@@ -460,11 +468,12 @@ function saveGame(){
   const data = {
     total: state.total,
     cookies: state.cookies,
-    perClick: state.perClick,
+    basePerClick: state.basePerClick,
     bonus: state.bonus,
     items: state.items.map(it=>({id:it.id,count:it.count,cost:it.cost}))
   };
   localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+  showFloat('Gespeichert', document.getElementById('wrap'));
 }
 
 function loadGame(){
@@ -474,7 +483,8 @@ function loadGame(){
     const data = JSON.parse(raw);
     state.total = data.total || 0;
     state.cookies = data.cookies || 0;
-    state.perClick = data.perClick || 1;
+    state.basePerClick = data.basePerClick || 1;
+    state.perClick = state.basePerClick;
     state.bonus = data.bonus || 0;
     for(const s of data.items || []){
       const it = state.items.find(x=>x.id===s.id);
@@ -483,17 +493,19 @@ function loadGame(){
     recalcCPS();
     renderShop();
     updateUI();
+    showFloat('Geladen', document.getElementById('wrap'));
   }catch(e){ /* ignore corrupt save */ }
 }
 
 function resetGame(){
   if(!confirm('Reset? Alle Fortschritte gehen verloren.')) return;
-  state = { total:0, cookies:0, perClick:1, bonus:0, cps:0, items:[], lastTick:Date.now() };
+  state = { total:0, cookies:0, basePerClick:1, perClick:1, bonus:0, cps:0, items:[], lastTick:Date.now() };
   state.items = genShop();
   recalcCPS();
   renderShop();
   updateUI();
   localStorage.removeItem(SAVE_KEY);
+  showFloat('Zurückgesetzt', document.getElementById('wrap'));
 }
 
 // init & hooks
@@ -508,7 +520,8 @@ function init(){
       const parsed = JSON.parse(raw);
       state.total = parsed.total || 0;
       state.cookies = parsed.cookies || 0;
-      state.perClick = parsed.perClick || 1;
+      state.basePerClick = parsed.basePerClick || 1;
+      state.perClick = state.basePerClick;
       state.bonus = parsed.bonus || 0;
       for(const s of parsed.items || []){
         const it = state.items.find(x=>x.id===s.id);
@@ -521,28 +534,34 @@ function init(){
   renderShop();
   updateUI();
 
-  document.getElementById('bigBtn').addEventListener('click', doClick);
-  document.getElementById('saveBtn').addEventListener('click', saveGame);
-  document.getElementById('loadBtn').addEventListener('click', loadGame);
-  document.getElementById('resetBtn').addEventListener('click', resetGame);
-  document.getElementById('buyMaxBtn').addEventListener('click', buyMaxAll);
+  const bigBtn = document.getElementById('bigBtn');
+  // pointerdown for immediate touch response; passive:false so we can prevent default if needed
+  bigBtn.addEventListener('pointerdown', (e)=>{ e.preventDefault(); doClick(); }, {passive:false});
+  // also support keyboard click
+  bigBtn.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' || e.key === ' ') doClick(); });
+
+  document.getElementById('saveBtn').addEventListener('pointerdown', (e)=>{ e.preventDefault(); saveGame(); }, {passive:false});
+  document.getElementById('loadBtn').addEventListener('pointerdown', (e)=>{ e.preventDefault(); loadGame(); }, {passive:false});
+  document.getElementById('resetBtn').addEventListener('pointerdown', (e)=>{ e.preventDefault(); resetGame(); }, {passive:false});
+  document.getElementById('buyMaxBtn').addEventListener('pointerdown', (e)=>{ e.preventDefault(); buyMaxAll(); }, {passive:false});
 
   document.getElementById('filter').addEventListener('input', (e)=> renderShop(e.target.value, currentSort));
-  document.getElementById('sortBtn').addEventListener('click', ()=>{
+  document.getElementById('sortBtn').addEventListener('pointerdown', (e)=>{
+    e.preventDefault();
     if(currentSort === 'cost') currentSort = 'cps';
     else if(currentSort === 'cps') currentSort = 'id';
     else currentSort = 'cost';
     document.getElementById('sortBtn').textContent = 'Sort: ' + (currentSort === 'cost' ? 'Preis' : currentSort === 'cps' ? 'CPS' : 'ID');
     renderShop(document.getElementById('filter').value, currentSort);
-  });
+  }, {passive:false});
 
-  // delegated shop clicks
-  document.getElementById('shop').addEventListener('click', (e)=>{
+  // delegated shop clicks (pointer)
+  document.getElementById('shop').addEventListener('pointerdown', (e)=>{
     const buy = e.target.closest('.buyBtn');
-    if(buy){ buyItem(parseInt(buy.dataset.id)); recalcCPS(); return; }
+    if(buy){ e.preventDefault(); buyItem(parseInt(buy.dataset.id)); recalcCPS(); return; }
     const max = e.target.closest('button[data-action="max"]');
-    if(max){ buyMax(parseInt(max.dataset.id)); recalcCPS(); return; }
-  });
+    if(max){ e.preventDefault(); buyMax(parseInt(max.dataset.id)); recalcCPS(); return; }
+  }, {passive:false});
 
   // keyboard shortcuts
   addEventListener('keydown', (e)=>{
@@ -557,7 +576,7 @@ function init(){
   requestAnimationFrame(tick);
   setInterval(saveGame, 10000);
 
-  // golden cookie every 60s, spawn first after 10s
+  // golden cookie every 60s, first after 10s
   setTimeout(()=>{ spawnGolden(); setInterval(spawnGolden, 60000); }, 10000);
 }
 
