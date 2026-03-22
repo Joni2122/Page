@@ -560,7 +560,7 @@ function init(){
 
   document.getElementById('saveBtn').addEventListener('pointerdown', (e)=>{ e.preventDefault(); saveGame(); }, {passive:false});
   document.getElementById('loadBtn').addEventListener('pointerdown', (e)=>{ e.preventDefault(); loadGame(); }, {passive:false});
-  document.getElementById('resetBtn').addEventListener('pointerdown', (e)=>{ e.preventDefault(); resetGame(); }, {passive:false});
+  
   document.getElementById('buyMaxBtn').addEventListener('pointerdown', (e)=>{ e.preventDefault(); buyMaxAll(); }, {passive:false});
 
   document.getElementById('filter').addEventListener('input', (e)=> renderShop(e.target.value, currentSort));
