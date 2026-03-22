@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>ClickerX — Red Button Pro (Polished)</title>
+<title>ClickerX — Red Cookie</title>
 <style>
   :root{
     --bg:#041018;
@@ -15,6 +15,7 @@
     --glass:rgba(255,255,255,0.03);
     --ok:#7cff7c;
     --locked:#3b3f46;
+    --gold:#ffd86b;
   }
   *{box-sizing:border-box}
   html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:
@@ -26,38 +27,59 @@
   .stats{display:flex;gap:12px;align-items:center}
   .stat{background:linear-gradient(180deg,var(--glass),transparent);padding:10px 14px;border-radius:10px;color:var(--muted);font-size:13px;border:1px solid rgba(255,255,255,0.02)}
   .big{font-size:26px;color:#fff;font-weight:800}
-  .layout{display:grid;grid-template-columns:460px 1fr;gap:16px}
+  .layout{display:grid;grid-template-columns:480px 1fr;gap:16px}
   .panel{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 10px 30px rgba(0,0,0,0.5)}
   #clickerArea{display:flex;flex-direction:column;align-items:center;gap:12px}
-  /* Red big button */
+  /* cookie button */
   #bigBtn{
-    width:320px;height:320px;border-radius:50%;background:radial-gradient(circle at 30% 30%, #ff8b8b, var(--accent));border:8px solid rgba(255,255,255,0.06);
-    color:#fff;font-size:30px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;
-    box-shadow:0 28px 70px rgba(255,59,59,0.18), inset 0 -12px 36px rgba(0,0,0,0.28);
+    width:320px;height:320px;border-radius:50%;background:
+      radial-gradient(circle at 30% 30%, #ffdca8 0%, #f2b86b 40%, #d18b3a 100%);
+    border:8px solid rgba(255,255,255,0.06);
+    color:#2b1600;font-size:28px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 28px 70px rgba(0,0,0,0.35), inset 0 -12px 36px rgba(0,0,0,0.12);
     transition:transform .08s ease, box-shadow .12s ease;position:relative;overflow:hidden;
   }
   #bigBtn:active{transform:scale(0.98)}
-  #bigBtn::after{content:"";position:absolute;inset:-8px;border-radius:50%;box-shadow:0 0 0 0 rgba(255,59,59,0.18);animation:pulse 2.2s infinite}
-  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,59,59,0.18)}70%{box-shadow:0 0 0 44px rgba(255,59,59,0)}100%{box-shadow:0 0 0 0 rgba(255,59,59,0)}}
+  #bigBtn .chip{position:absolute;width:18px;height:12px;border-radius:3px;background:#6b3b1a;box-shadow:inset 0 -2px 0 rgba(0,0,0,0.2)}
+  /* chips positions */
+  #bigBtn .c1{left:22%;top:28%;transform:rotate(-12deg)}
+  #bigBtn .c2{left:58%;top:22%;transform:rotate(18deg)}
+  #bigBtn .c3{left:40%;top:56%;transform:rotate(-6deg)}
+  #bigBtn .c4{left:68%;top:52%;transform:rotate(10deg)}
+  /* pulse ring */
+  #bigBtn::after{content:"";position:absolute;inset:-8px;border-radius:50%;box-shadow:0 0 0 0 rgba(255,200,120,0.06);animation:cookiePulse 2.6s infinite}
+  @keyframes cookiePulse{0%{box-shadow:0 0 0 0 rgba(255,200,120,0.06)}70%{box-shadow:0 0 0 44px rgba(255,200,120,0)}100%{box-shadow:0 0 0 0 rgba(255,200,120,0)}}
   .mini{display:flex;gap:12px;align-items:center}
   .controls{display:flex;gap:8px;flex-wrap:wrap}
   .btn{background:var(--glass);border:1px solid rgba(255,255,255,0.03);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
   .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-dark));color:#fff;font-weight:700}
   .shop{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;max-height:76vh;overflow:auto;padding-right:6px}
-  .item{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:8px;transition:transform .12s, box-shadow .12s}
-  .item:hover{transform:translateY(-6px);box-shadow:0 10px 30px rgba(0,0,0,0.45)}
+  .item{position:relative;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:8px;transition:transform .12s, box-shadow .12s, opacity .12s}
+  .item.locked{opacity:0.45;filter:grayscale(60%);background:linear-gradient(180deg,rgba(0,0,0,0.02),transparent);border-color:rgba(255,255,255,0.01)}
+  .item.affordable{box-shadow:0 10px 30px rgba(124,255,124,0.06);border-color:rgba(124,255,124,0.06)}
   .row{display:flex;justify-content:space-between;align-items:center}
   .name{font-weight:800;color:#fff}
   .desc{color:var(--muted);font-size:13px}
   .cost{color:var(--muted);font-size:13px}
   .count{color:var(--accent);font-weight:800}
-  .locked{opacity:0.45;filter:grayscale(60%);background:linear-gradient(180deg,rgba(0,0,0,0.02),transparent);border-color:rgba(255,255,255,0.01)}
-  .affordable{animation:glow 1.6s infinite}
-  @keyframes glow{0%{box-shadow:0 0 0 0 rgba(124,255,124,0.0)}50%{box-shadow:0 0 18px 6px rgba(124,255,124,0.06)}100%{box-shadow:0 0 0 0 rgba(124,255,124,0.0)}}
   .count-bump{animation:bump .36s ease}
   @keyframes bump{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+  .flair-sparkle::before{content:"";position:absolute;left:10px;top:8px;font-size:12px;color:rgba(255,255,255,0.06)}
+  /* animations for item types */
+  .anim-gear .anim-el{width:28px;height:28px;border-radius:4px;background:linear-gradient(180deg,#cfcfcf,#9b9b9b);margin-left:auto;animation:spin 3s linear infinite}
+  @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+  .anim-flame .anim-el{width:28px;height:28px;margin-left:auto;background:linear-gradient(180deg,#ffb86b,#ff6b3b);border-radius:6px;animation:flame 1.2s infinite}
+  @keyframes flame{0%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-6px) scaleY(1.08)}100%{transform:translateY(0) scaleY(1)}}
+  .anim-orb .anim-el{width:28px;height:28px;margin-left:auto;border-radius:50%;background:radial-gradient(circle,#9be6ff,#3b9cff);box-shadow:0 6px 18px rgba(59,156,255,0.12);animation:orb 2.4s infinite}
+  @keyframes orb{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
+  .anim-spark .anim-el{width:28px;height:28px;margin-left:auto;background:linear-gradient(90deg,#fff,#ffd86b);border-radius:6px;animation:spark 1.6s infinite}
+  @keyframes spark{0%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(12deg)}100%{transform:translateY(0) rotate(0)}}
+  .golden{position:fixed;left:50%;transform:translateX(-50%);top:-80px;width:64px;height:64px;border-radius:12px;background:linear-gradient(180deg,#fff0b8,#ffd86b);box-shadow:0 12px 30px rgba(255,200,80,0.25);display:flex;align-items:center;justify-content:center;font-weight:800;color:#6b3b00;cursor:pointer;z-index:9999;animation:fall 6s linear forwards}
+  @keyframes fall{0%{top:-120px;opacity:0}10%{opacity:1}90%{top:110vh;opacity:1}100%{top:110vh;opacity:0}}
+  .golden .shine{position:absolute;inset:0;border-radius:12px;box-shadow:inset 0 10px 30px rgba(255,255,255,0.25);opacity:0.6}
+  .mult-banner{position:fixed;left:50%;transform:translateX(-50%);top:18px;background:linear-gradient(90deg,#ffd86b,#ffb86b);padding:10px 18px;border-radius:10px;color:#3b1a00;font-weight:800;box-shadow:0 8px 30px rgba(0,0,0,0.4);z-index:10000;display:none}
+  .mult-active{display:block}
   .small-muted{font-size:13px;color:var(--muted)}
-  .hint{font-size:13px;color:var(--muted);margin-top:8px}
   footer{margin-top:14px;text-align:center;color:var(--muted);font-size:13px}
   @media (max-width:980px){ .layout{grid-template-columns:1fr} #bigBtn{width:220px;height:220px} .shop{max-height:48vh} }
 </style>
@@ -65,7 +87,7 @@
 <body>
   <div class="wrap">
     <header>
-      <h1>ClickerX — Red Button Pro</h1>
+      <h1>ClickerX — Red Cookie</h1>
       <div class="stats">
         <div class="stat">Gesamt: <div id="totalDisplay" class="big">0.00</div></div>
         <div class="stat">CPS: <div id="cpsDisplay" class="big">0.00</div></div>
@@ -75,7 +97,10 @@
     <div class="layout">
       <div class="panel" id="clickerPanel">
         <div id="clickerArea">
-          <button id="bigBtn" aria-label="Großer roter Klickknopf">KLICK</button>
+          <button id="bigBtn" aria-label="Großer Cookie">
+            <span style="font-size:18px">🍪</span>
+            <div class="chip c1"></div><div class="chip c2"></div><div class="chip c3"></div><div class="chip c4"></div>
+          </button>
 
           <div class="mini" style="width:100%;justify-content:space-between">
             <div class="stat">Cookies: <div id="cookieDisplay" class="big">0.00</div></div>
@@ -97,7 +122,7 @@
           </div>
 
           <div style="width:100%;margin-top:8px">
-            <div class="hint">Shop: graue Addons sind gesperrt, leuchten wenn du sie dir leisten kannst. Kreative Addons haben eigene Effekte.</div>
+            <div class="hint">Goldene Kekse regnen jede Minute. Klick sie für einen zufälligen Cookie‑Multiplikator (1–100) für 20s.</div>
           </div>
         </div>
       </div>
@@ -123,18 +148,15 @@
     </footer>
   </div>
 
+  <div id="multBanner" class="mult-banner">x<span id="multVal">1</span> Cookie‑Boost aktiv!</div>
+
 <script>
-/* Single-file ClickerX — polished:
-   - logs removed
-   - shop items greyed until affordable, glow when affordable
-   - creative addon names + animations
-   - special "AutoClicker" addon gives auto-click effect (adds perClick * rate)
-   - all in one HTML, no external deps
+/* ClickerX — polished with per-item animations, golden cookie rain, random multiplier.
+   Single-file. Save as index.html and open in browser.
 */
 
-const SAVE_KEY = 'clickerx_polished_v1';
+const SAVE_KEY = 'clickerx_polished_gold_v2';
 const SHOP_COUNT = 100;
-
 let state = {
   total: 0,
   cookies: 0,
@@ -144,6 +166,11 @@ let state = {
   items: [],
   lastTick: Date.now()
 };
+
+// multiplier state
+let goldenActive = false;
+let goldenMultiplier = 1;
+let goldenTimeout = null;
 
 // formatting
 function fmtShort(n){
@@ -158,54 +185,32 @@ function fmtDisplay(n){
   return fmtShort(n);
 }
 
-// no-op logger (logs removed per request)
-function log(){ /* intentionally empty */ }
-
-// creative names for first 25 items
+// creative names
 const CREATIVE_NAMES = [
-  "AutoClicker Mk I",
-  "Cookie Drone",
-  "Sugar Synthesizer",
-  "Quantum Oven",
-  "Dragon's Breath (toy)",
-  "Neon Mixer",
-  "Pixel Baker",
-  "Time-Warp Kettle",
-  "Lucky Spoon",
-  "Grandma's Secret",
-  "Factory Bot",
-  "Holo-Advertiser",
-  "Cloud Mixer",
-  "Magnet Glove",
-  "Turbo Whisk",
-  "Orbital Oven",
-  "Echo Harvester",
-  "Flux Conveyor",
-  "Crystal Jar",
-  "Starlight Press",
-  "Pocket Blackhole",
-  "Candy Forge",
-  "Dream Mill",
-  "Aurora Tray",
-  "Zen Garden"
+  "AutoClicker Mk I","Cookie Drone","Sugar Synthesizer","Quantum Oven","Dragon's Breath",
+  "Neon Mixer","Pixel Baker","Time‑Warp Kettle","Lucky Spoon","Grandma's Secret",
+  "Factory Bot","Holo‑Advertiser","Cloud Mixer","Magnet Glove","Turbo Whisk",
+  "Orbital Oven","Echo Harvester","Flux Conveyor","Crystal Jar","Starlight Press",
+  "Pocket Blackhole","Candy Forge","Dream Mill","Aurora Tray","Zen Garden"
 ];
 
-// generate shop with some special behaviors
+// generate shop with special flags and animation types
 function genShop(){
   const items = [];
   for(let i=1;i<=SHOP_COUNT;i++){
     const name = CREATIVE_NAMES[i-1] || `Addon #${i}`;
-    // base cost scaling
     const base = Math.max(5, Math.round(Math.pow(1.17, i) * (8 + i*4)));
-    // cps scaling
     const cps = parseFloat((Math.pow(1.07, i) * (0.05 + i*0.04)).toFixed(3));
-    // special: item 1 (AutoClicker Mk I) gives autoClickRatePerCount
     const special = {};
-    if(i === 1) special.autoClickRatePerCount = 0.5; // clicks per second per count
-    if(i === 5) special.bonusPerCount = 0.02; // tiny bonus to cps per count
-    // some items have small sparkle animation flag
-    const flair = (i % 7 === 0);
-    items.push({ id:i, name, baseCost: base, cost: base, cps, count:0, special, flair });
+    if(i === 1) special.autoClickRatePerCount = 0.5; // auto-clicks per second per unit
+    if(i === 5) special.bonusPerCount = 0.02;
+    // assign animation type by pattern
+    let anim = 'anim-spark';
+    if(i % 7 === 0) anim = 'anim-gear';
+    if(i % 5 === 0) anim = 'anim-flame';
+    if(i % 3 === 0) anim = 'anim-orb';
+    const flair = (i % 6 === 0);
+    items.push({ id:i, name, baseCost: base, cost: base, cps, count:0, special, anim, flair });
   }
   return items;
 }
@@ -228,8 +233,8 @@ function renderShop(filter='', sortBy='cost'){
   for(const it of list){
     const div = document.createElement('div');
     const affordable = state.cookies >= it.cost;
-    div.className = 'item' + (affordable ? ' affordable' : ' locked');
-    // creative description for special items
+    div.className = 'item ' + (affordable ? 'affordable' : 'locked');
+    // description
     let desc = '';
     if(it.special && it.special.autoClickRatePerCount){
       desc = `Auto‑clicks: +${it.special.autoClickRatePerCount}/s per unit`;
@@ -238,7 +243,8 @@ function renderShop(filter='', sortBy='cost'){
     } else {
       desc = `Generates ${it.cps} CPS each`;
     }
-    // flair animation element
+    // animation element
+    const animHtml = `<div class="anim-el" style="margin-left:auto"></div>`;
     const flairHtml = it.flair ? `<div style="position:absolute;right:10px;top:8px;color:rgba(255,255,255,0.06);font-size:12px">✦</div>` : '';
     div.innerHTML = `
       ${flairHtml}
@@ -249,7 +255,10 @@ function renderShop(filter='', sortBy='cost'){
         <button class="btn buyBtn" data-id="${it.id}" ${affordable ? '' : 'disabled'}>Kaufen</button>
         <button class="btn" data-id="${it.id}" data-action="max" ${affordable ? '' : 'disabled'}>Max</button>
       </div>
+      ${animHtml}
     `;
+    // add animation class
+    div.classList.add(it.anim);
     shop.appendChild(div);
   }
 }
@@ -265,12 +274,12 @@ function updateUI(){
 
   // update visible items and affordability classes
   document.querySelectorAll('#shop .item').forEach(el=>{
-    const idAttr = el.querySelector('.count')?.dataset.id;
-    if(!idAttr) return;
-    const id = parseInt(idAttr);
+    const countEl = el.querySelector('.count');
+    if(!countEl) return;
+    const id = parseInt(countEl.dataset.id);
     const it = state.items.find(x=>x.id===id);
     if(!it) return;
-    el.querySelector('.count').textContent = `x${it.count}`;
+    countEl.textContent = `x${it.count}`;
     const costEls = el.querySelectorAll('.cost');
     if(costEls.length >= 2) costEls[1].textContent = `Preis: ${fmtDisplay(it.cost)}`;
     const affordable = state.cookies >= it.cost;
@@ -288,9 +297,7 @@ function updateUI(){
 
 // game logic
 function recalcCPS(){
-  // base cps from items
   let base = state.items.reduce((s,it)=>s + it.cps * it.count, 0);
-  // apply special bonuses
   for(const it of state.items){
     if(it.special && it.special.bonusPerCount){
       base += it.count * it.special.bonusPerCount;
@@ -304,7 +311,8 @@ function autoClickContribution(dt){
   const it = state.items.find(x=>x.special && x.special.autoClickRatePerCount);
   if(!it) return 0;
   const rate = it.count * (it.special.autoClickRatePerCount || 0); // clicks per second
-  return rate * state.perClick * dt; // cookies gained from auto-clicks
+  // auto-clicks produce perClick each; apply golden multiplier to perClick via current perClick value
+  return rate * state.perClick * dt;
 }
 
 function tick(){
@@ -321,7 +329,7 @@ function tick(){
   requestAnimationFrame(tick);
 }
 
-// click handling with immediate update and feedback
+// click handling
 function doClick(){
   const gain = state.perClick;
   state.cookies += gain;
@@ -329,15 +337,15 @@ function doClick(){
 
   // button animation + floating text
   const bigBtn = document.getElementById('bigBtn');
-  bigBtn.animate([{transform:'scale(1)'},{transform:'scale(1.08)'},{transform:'scale(1)'}],{duration:140,easing:'cubic-bezier(.2,.8,.2,1)'});
+  bigBtn.animate([{transform:'scale(1)'},{transform:'scale(1.06)'},{transform:'scale(1)'}],{duration:140,easing:'cubic-bezier(.2,.8,.2,1)'});
 
   const flash = document.createElement('div');
-  flash.textContent = `+${gain}`;
+  flash.textContent = `+${gain * (goldenActive ? goldenMultiplier : 1)}`;
   flash.style.position = 'absolute';
-  flash.style.top = '18%';
+  flash.style.top = '12%';
   flash.style.left = '50%';
   flash.style.transform = 'translateX(-50%)';
-  flash.style.color = '#fff';
+  flash.style.color = '#6b3b1a';
   flash.style.fontWeight = '900';
   flash.style.pointerEvents = 'none';
   flash.style.textShadow = '0 2px 8px rgba(0,0,0,0.6)';
@@ -363,7 +371,7 @@ function buyItem(id, qty=1){
   }
   if(bought>0){
     recalcCPS();
-    // small count bump animation
+    // bump animation
     const countEl = document.querySelector(`#shop .count[data-id="${id}"]`);
     if(countEl){
       countEl.classList.remove('count-bump');
@@ -401,6 +409,50 @@ function buyMaxAll(){
     }
   }
   if(totalBought>0){ recalcCPS(); updateUI(); }
+}
+
+// golden cookie: spawn every 60s
+function spawnGolden(){
+  const el = document.createElement('div');
+  el.className = 'golden';
+  el.innerHTML = `<div class="shine"></div>🍪`;
+  document.body.appendChild(el);
+  // remove after animation ends (6s)
+  setTimeout(()=>{ if(el.parentNode) el.parentNode.removeChild(el); }, 6200);
+  el.addEventListener('click', ()=>{
+    // apply random multiplier 1..100 for 20s
+    const mult = Math.floor(Math.random()*100) + 1;
+    activateGolden(mult);
+    // pop effect
+    el.style.transform = 'translateX(-50%) scale(1.2)';
+    el.style.opacity = '0';
+    setTimeout(()=>{ if(el.parentNode) el.parentNode.removeChild(el); }, 300);
+  });
+}
+
+// activate golden multiplier
+function activateGolden(mult){
+  if(goldenTimeout) clearTimeout(goldenTimeout);
+  goldenActive = true;
+  goldenMultiplier = mult;
+  // apply multiplier to perClick visually by multiplying displayed perClick (we keep base perClick in state.perClickBase if needed)
+  // We'll temporarily multiply state.perClick for 20s
+  state.perClick = state.perClick * mult;
+  document.getElementById('multVal').textContent = mult;
+  document.getElementById('multBanner').classList.add('mult-active');
+  goldenTimeout = setTimeout(()=>{ deactivateGolden(); }, 20000);
+}
+
+// deactivate golden
+function deactivateGolden(){
+  if(!goldenActive) return;
+  // revert perClick by dividing by multiplier
+  state.perClick = state.perClick / goldenMultiplier;
+  goldenActive = false;
+  goldenMultiplier = 1;
+  document.getElementById('multBanner').classList.remove('mult-active');
+  goldenTimeout = null;
+  updateUI();
 }
 
 // save/load/reset
@@ -487,9 +539,9 @@ function init(){
   // delegated shop clicks
   document.getElementById('shop').addEventListener('click', (e)=>{
     const buy = e.target.closest('.buyBtn');
-    if(buy){ buyItem(parseInt(buy.dataset.id)); return; }
+    if(buy){ buyItem(parseInt(buy.dataset.id)); recalcCPS(); return; }
     const max = e.target.closest('button[data-action="max"]');
-    if(max){ buyMax(parseInt(max.dataset.id)); return; }
+    if(max){ buyMax(parseInt(max.dataset.id)); recalcCPS(); return; }
   });
 
   // keyboard shortcuts
@@ -504,6 +556,9 @@ function init(){
   state.lastTick = Date.now();
   requestAnimationFrame(tick);
   setInterval(saveGame, 10000);
+
+  // golden cookie every 60s, spawn first after 10s
+  setTimeout(()=>{ spawnGolden(); setInterval(spawnGolden, 60000); }, 10000);
 }
 
 // start
