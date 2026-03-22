@@ -1,5 +1,5 @@
-// game.js — Red Button Edition
-// Klick funktioniert zuverlässig, bessere UI feedback, 100 Addons, Save/Load, Buy Max
+// game.js — Red Button Pro (korrigiert)
+// Klick zählt zuverlässig; Anzeige zeigt Dezimalstellen bei kleinen Werten
 
 // --- State ---
 let state = {
@@ -13,15 +13,20 @@ let state = {
 };
 
 const SHOP_COUNT = 100;
-const SAVE_KEY = 'clickerx_red_v1';
+const SAVE_KEY = 'clickerx_red_v2';
 
 // --- Helpers ---
-function fmt(n){
+function fmtShort(n){
   if(n >= 1e12) return (n/1e12).toFixed(2)+'T';
   if(n >= 1e9) return (n/1e9).toFixed(2)+'B';
   if(n >= 1e6) return (n/1e6).toFixed(2)+'M';
   if(n >= 1e3) return (n/1e3).toFixed(2)+'k';
   return Math.floor(n).toString();
+}
+// präzise Anzeige: wenn <1000 zeige 2 Dezimalstellen, sonst abgekürzt
+function fmtDisplay(n){
+  if(n < 1000) return Number(n).toFixed(2);
+  return fmtShort(n);
 }
 function nowTime(){ return new Date().toLocaleTimeString(); }
 function log(msg){
@@ -64,7 +69,7 @@ function renderShop(filter='', sortBy='cost'){
     div.className = 'item';
     div.innerHTML = `
       <div class="row"><div class="name">${it.name}</div><div class="count">x${it.count}</div></div>
-      <div class="row"><div class="cost">CPS: ${it.cps}</div><div class="cost">Preis: ${fmt(it.cost)}</div></div>
+      <div class="row"><div class="cost">CPS: ${it.cps}</div><div class="cost">Preis: ${fmtDisplay(it.cost)}</div></div>
       <div style="display:flex;gap:8px;justify-content:flex-end">
         <button class="btn buyBtn" data-id="${it.id}">Kaufen</button>
         <button class="btn" data-id="${it.id}" data-action="max">Max</button>
@@ -75,9 +80,9 @@ function renderShop(filter='', sortBy='cost'){
 }
 
 function updateUI(){
-  document.getElementById('totalDisplay').textContent = fmt(state.total);
+  document.getElementById('totalDisplay').textContent = fmtDisplay(state.total);
   document.getElementById('cpsDisplay').textContent = state.cps.toFixed(2);
-  document.getElementById('cookieDisplay').textContent = fmt(state.cookies);
+  document.getElementById('cookieDisplay').textContent = fmtDisplay(state.cookies);
   document.getElementById('perClick').textContent = state.perClick;
   document.getElementById('bonus').textContent = state.bonus;
   document.getElementById('ownedSummary').textContent = `Addons: ${state.items.reduce((s,i)=>s+i.count,0)}`;
@@ -89,7 +94,7 @@ function updateUI(){
     if(!it) return;
     el.querySelector('.count').textContent = `x${it.count}`;
     const costEls = el.querySelectorAll('.cost');
-    if(costEls.length >= 2) costEls[1].textContent = `Preis: ${fmt(it.cost)}`;
+    if(costEls.length >= 2) costEls[1].textContent = `Preis: ${fmtDisplay(it.cost)}`;
   });
 }
 
@@ -112,18 +117,20 @@ function tick(){
 }
 
 // --- Click handling with visual feedback ---
-const bigBtn = document.getElementById('bigBtn');
 function doClick(){
   const gain = state.perClick;
   state.cookies += gain;
   state.total += gain;
-  // small pop animation
+
+  // visual feedback on button
+  const bigBtn = document.getElementById('bigBtn');
   bigBtn.animate([
     { transform: 'scale(1)' },
-    { transform: 'scale(1.06)' },
+    { transform: 'scale(1.08)' },
     { transform: 'scale(1)' }
   ], { duration: 140, easing: 'cubic-bezier(.2,.8,.2,1)' });
-  // flash text
+
+  // floating +text
   const flash = document.createElement('div');
   flash.textContent = `+${gain}`;
   flash.style.position = 'absolute';
@@ -131,10 +138,12 @@ function doClick(){
   flash.style.left = '50%';
   flash.style.transform = 'translateX(-50%)';
   flash.style.color = '#fff';
-  flash.style.fontWeight = '800';
+  flash.style.fontWeight = '900';
   flash.style.pointerEvents = 'none';
-  bigBtn.appendChild(flash);
-  flash.animate([{opacity:1, transform:'translateY(0)'},{opacity:0, transform:'translateY(-40px)'}], {duration:700}).onfinish = ()=> flash.remove();
+  flash.style.textShadow = '0 2px 8px rgba(0,0,0,0.6)';
+  flash.style.fontSize = '18px';
+  document.getElementById('bigBtn').appendChild(flash);
+  flash.animate([{opacity:1, transform:'translateY(0)'},{opacity:0, transform:'translateY(-48px)'}], {duration:700}).onfinish = ()=> flash.remove();
 
   log(`Klick +${gain}`);
   updateUI();
@@ -270,6 +279,7 @@ function init(){
   renderShop();
   updateUI();
 
+  // hooks
   document.getElementById('bigBtn').addEventListener('click', doClick);
   document.getElementById('saveBtn').addEventListener('click', saveGame);
   document.getElementById('loadBtn').addEventListener('click', loadGame);
