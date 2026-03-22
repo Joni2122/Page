@@ -1,97 +1,311 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ClickerX — Mega Clicker</title>
-  <style>
-    :root{
-      --bg:#0b1220; --card:#0f1724; --accent:#00e6ff; --accent2:#9b59ff;
-      --muted:#9aa4b2; --glass: rgba(255,255,255,0.03);
+// game.js — Red Button Edition
+// Klick funktioniert zuverlässig, bessere UI feedback, 100 Addons, Save/Load, Buy Max
+
+// --- State ---
+let state = {
+  total: 0,
+  cookies: 0,
+  perClick: 1,
+  bonus: 0,
+  cps: 0,
+  items: [],
+  lastTick: Date.now()
+};
+
+const SHOP_COUNT = 100;
+const SAVE_KEY = 'clickerx_red_v1';
+
+// --- Helpers ---
+function fmt(n){
+  if(n >= 1e12) return (n/1e12).toFixed(2)+'T';
+  if(n >= 1e9) return (n/1e9).toFixed(2)+'B';
+  if(n >= 1e6) return (n/1e6).toFixed(2)+'M';
+  if(n >= 1e3) return (n/1e3).toFixed(2)+'k';
+  return Math.floor(n).toString();
+}
+function nowTime(){ return new Date().toLocaleTimeString(); }
+function log(msg){
+  const el = document.getElementById('log');
+  const line = document.createElement('div');
+  line.textContent = `[${nowTime()}] ${msg}`;
+  el.prepend(line);
+  while(el.children.length > 200) el.removeChild(el.lastChild);
+}
+
+// --- Shop generation ---
+function genShop(){
+  const items = [];
+  for(let i=1;i<=SHOP_COUNT;i++){
+    const name = `Addon #${i}`;
+    const base = Math.max(5, Math.round(Math.pow(1.17, i) * (8 + i*4)));
+    const cps = parseFloat((Math.pow(1.07, i) * (0.05 + i*0.04)).toFixed(3));
+    items.push({ id:i, name, baseCost: base, cost: base, cps, count:0 });
+  }
+  return items;
+}
+
+// --- UI ---
+function renderShop(filter='', sortBy='cost'){
+  const shop = document.getElementById('shop');
+  shop.innerHTML = '';
+  let list = state.items.slice();
+
+  if(filter){
+    const f = filter.toLowerCase();
+    list = list.filter(it => it.name.toLowerCase().includes(f) || String(it.id).includes(f));
+  }
+
+  if(sortBy === 'cost') list.sort((a,b)=>a.cost-b.cost);
+  if(sortBy === 'cps') list.sort((a,b)=>b.cps-a.cps);
+  if(sortBy === 'id') list.sort((a,b)=>a.id-b.id);
+
+  for(const it of list){
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `
+      <div class="row"><div class="name">${it.name}</div><div class="count">x${it.count}</div></div>
+      <div class="row"><div class="cost">CPS: ${it.cps}</div><div class="cost">Preis: ${fmt(it.cost)}</div></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn buyBtn" data-id="${it.id}">Kaufen</button>
+        <button class="btn" data-id="${it.id}" data-action="max">Max</button>
+      </div>
+    `;
+    shop.appendChild(div);
+  }
+}
+
+function updateUI(){
+  document.getElementById('totalDisplay').textContent = fmt(state.total);
+  document.getElementById('cpsDisplay').textContent = state.cps.toFixed(2);
+  document.getElementById('cookieDisplay').textContent = fmt(state.cookies);
+  document.getElementById('perClick').textContent = state.perClick;
+  document.getElementById('bonus').textContent = state.bonus;
+  document.getElementById('ownedSummary').textContent = `Addons: ${state.items.reduce((s,i)=>s+i.count,0)}`;
+
+  // update visible items quickly
+  document.querySelectorAll('#shop .item').forEach(el=>{
+    const name = el.querySelector('.name')?.textContent;
+    const it = state.items.find(x=>x.name === name);
+    if(!it) return;
+    el.querySelector('.count').textContent = `x${it.count}`;
+    const costEls = el.querySelectorAll('.cost');
+    if(costEls.length >= 2) costEls[1].textContent = `Preis: ${fmt(it.cost)}`;
+  });
+}
+
+// --- Game logic ---
+function recalcCPS(){
+  state.cps = state.items.reduce((s,it)=>s + it.cps * it.count, 0) + state.bonus;
+}
+
+function tick(){
+  const now = Date.now();
+  const dt = (now - state.lastTick) / 1000;
+  if(dt > 0){
+    const gain = state.cps * dt;
+    state.cookies += gain;
+    state.total += gain;
+    state.lastTick = now;
+  }
+  updateUI();
+  requestAnimationFrame(tick);
+}
+
+// --- Click handling with visual feedback ---
+const bigBtn = document.getElementById('bigBtn');
+function doClick(){
+  const gain = state.perClick;
+  state.cookies += gain;
+  state.total += gain;
+  // small pop animation
+  bigBtn.animate([
+    { transform: 'scale(1)' },
+    { transform: 'scale(1.06)' },
+    { transform: 'scale(1)' }
+  ], { duration: 140, easing: 'cubic-bezier(.2,.8,.2,1)' });
+  // flash text
+  const flash = document.createElement('div');
+  flash.textContent = `+${gain}`;
+  flash.style.position = 'absolute';
+  flash.style.top = '18%';
+  flash.style.left = '50%';
+  flash.style.transform = 'translateX(-50%)';
+  flash.style.color = '#fff';
+  flash.style.fontWeight = '800';
+  flash.style.pointerEvents = 'none';
+  bigBtn.appendChild(flash);
+  flash.animate([{opacity:1, transform:'translateY(0)'},{opacity:0, transform:'translateY(-40px)'}], {duration:700}).onfinish = ()=> flash.remove();
+
+  log(`Klick +${gain}`);
+  updateUI();
+}
+
+// --- Buying ---
+function buyItem(id, qty=1){
+  const it = state.items.find(x=>x.id===id);
+  if(!it) return;
+  let bought = 0;
+  for(let i=0;i<qty;i++){
+    if(state.cookies >= it.cost){
+      state.cookies -= it.cost;
+      it.count++;
+      it.cost = Math.ceil(it.baseCost * Math.pow(1.15, it.count));
+      bought++;
+    } else break;
+  }
+  if(bought>0){
+    recalcCPS();
+    log(`Gekauft ${it.name} x${bought}`);
+    updateUI();
+  } else {
+    log(`Nicht genug Cookies für ${it.name}`);
+  }
+}
+
+function buyMax(id){
+  const it = state.items.find(x=>x.id===id);
+  if(!it) return;
+  let bought = 0;
+  while(state.cookies >= it.cost){
+    state.cookies -= it.cost;
+    it.count++;
+    it.cost = Math.ceil(it.baseCost * Math.pow(1.15, it.count));
+    bought++;
+    if(bought > 100000) break;
+  }
+  if(bought>0){
+    recalcCPS();
+    log(`BuyMax ${it.name} x${bought}`);
+    updateUI();
+  } else log('BuyMax: nichts gekauft');
+}
+
+function buyMaxAll(){
+  const sorted = state.items.slice().sort((a,b)=>a.cost-b.cost);
+  let totalBought = 0;
+  for(const it of sorted){
+    while(state.cookies >= it.cost){
+      state.cookies -= it.cost;
+      it.count++;
+      it.cost = Math.ceil(it.baseCost * Math.pow(1.15, it.count));
+      totalBought++;
+      if(totalBought > 100000) break;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:linear-gradient(180deg,#071022,#07102a);color:#e6eef6}
-    .wrap{max-width:1100px;margin:28px auto;padding:20px}
-    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-    h1{margin:0;font-size:20px}
-    .top-stats{display:flex;gap:12px;align-items:center}
-    .stat{background:var(--card);padding:10px 14px;border-radius:10px;color:var(--muted);font-size:14px}
-    .big{font-size:28px;color:#fff;font-weight:700}
-    .layout{display:grid;grid-template-columns:360px 1fr;gap:16px}
-    .panel{background:var(--card);padding:14px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.4)}
-    #clickerArea{display:flex;flex-direction:column;align-items:center;gap:12px}
-    #bigBtn{width:260px;height:260px;border-radius:50%;background:linear-gradient(145deg,var(--accent),var(--accent2));border:none;color:#001;font-size:22px;font-weight:800;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center}
-    #bigBtn:active{transform:scale(0.98)}
-    .mini{display:flex;gap:8px;align-items:center}
-    .controls{display:flex;gap:8px;flex-wrap:wrap}
-    .btn{background:var(--glass);border:1px solid rgba(255,255,255,0.03);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
-    .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#001;font-weight:700}
-    .shop{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
-    .item{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:8px}
-    .item .row{display:flex;justify-content:space-between;align-items:center}
-    .item .name{font-weight:700}
-    .cost{color:var(--muted);font-size:13px}
-    .count{color:var(--accent);font-weight:700}
-    .log{height:120px;overflow:auto;background:rgba(0,0,0,0.2);padding:8px;border-radius:8px;color:var(--muted);font-size:13px}
-    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
-    .search{display:flex;gap:8px;margin-bottom:10px}
-    input[type="search"]{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:#fff}
-    .small{font-size:12px;color:var(--muted)}
-    @media (max-width:900px){ .layout{grid-template-columns:1fr; } #bigBtn{width:200px;height:200px} }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <header>
-      <h1>ClickerX — Mega Clicker</h1>
-      <div class="top-stats">
-        <div class="stat">Gesamt: <div id="totalDisplay" class="big">0</div></div>
-        <div class="stat">CPS: <div id="cpsDisplay" class="big">0</div></div>
-      </div>
-    </header>
+  }
+  if(totalBought>0){
+    recalcCPS();
+    log(`BuyMaxAll: gekauft x${totalBought}`);
+    updateUI();
+  } else log('BuyMaxAll: nichts gekauft');
+}
 
-    <div class="layout">
-      <div class="panel" id="clickerPanel">
-        <div id="clickerArea">
-          <button id="bigBtn">KLICK</button>
-          <div class="mini">
-            <div class="small">Pro Klick: <span id="perClick">1</span></div>
-            <div class="small">Bonus: <span id="bonus">0</span></div>
-          </div>
-          <div class="controls">
-            <button class="btn" id="saveBtn">Speichern</button>
-            <button class="btn" id="loadBtn">Laden</button>
-            <button class="btn" id="resetBtn">Reset</button>
-            <button class="btn primary" id="buyMaxBtn">Buy Max</button>
-          </div>
-          <div style="width:100%;margin-top:8px">
-            <div class="small">Log</div>
-            <div id="log" class="log"></div>
-          </div>
-        </div>
-      </div>
+// --- Save / Load / Reset ---
+function saveGame(){
+  const data = {
+    total: state.total,
+    cookies: state.cookies,
+    perClick: state.perClick,
+    bonus: state.bonus,
+    items: state.items.map(it=>({id:it.id,count:it.count,cost:it.cost}))
+  };
+  localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+  log('Spiel gespeichert');
+}
 
-      <div class="panel">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <div style="display:flex;gap:8px;align-items:center">
-            <div class="small">Shop</div>
-            <div class="small" id="ownedSummary"></div>
-          </div>
-          <div class="search">
-            <input id="filter" type="search" placeholder="Suche Addon (Name oder #)" />
-            <button class="btn" id="sortBtn">Sort: Preis</button>
-          </div>
-        </div>
+function loadGame(){
+  const raw = localStorage.getItem(SAVE_KEY);
+  if(!raw){ log('Kein Save gefunden'); return; }
+  try{
+    const data = JSON.parse(raw);
+    state.total = data.total || 0;
+    state.cookies = data.cookies || 0;
+    state.perClick = data.perClick || 1;
+    state.bonus = data.bonus || 0;
+    for(const s of data.items || []){
+      const it = state.items.find(x=>x.id===s.id);
+      if(it){ it.count = s.count || 0; it.cost = s.cost || it.cost; }
+    }
+    recalcCPS();
+    renderShop();
+    updateUI();
+    log('Save geladen');
+  }catch(e){
+    log('Fehler beim Laden des Saves');
+  }
+}
 
-        <div id="shop" class="shop"></div>
-      </div>
-    </div>
+function resetGame(){
+  if(!confirm('Reset? Alle Fortschritte gehen verloren.')) return;
+  state = { total:0, cookies:0, perClick:1, bonus:0, cps:0, items:[], lastTick:Date.now() };
+  state.items = genShop();
+  recalcCPS();
+  renderShop();
+  updateUI();
+  localStorage.removeItem(SAVE_KEY);
+  log('Spiel zurückgesetzt');
+}
 
-    <footer>
-      <div class="small">Speichert automatisch. Hotkeys: Leertaste = Klick, M = Buy Max, S = Save, L = Load, R = Reset</div>
-    </footer>
-  </div>
+// --- Init & Hooks ---
+let currentSort = 'cost';
+function init(){
+  state.items = genShop();
 
-  <script src="game.js"></script>
-</body>
-</html>
+  // try load
+  const raw = localStorage.getItem(SAVE_KEY);
+  if(raw){
+    try{
+      const parsed = JSON.parse(raw);
+      state.total = parsed.total || 0;
+      state.cookies = parsed.cookies || 0;
+      state.perClick = parsed.perClick || 1;
+      state.bonus = parsed.bonus || 0;
+      for(const s of parsed.items || []){
+        const it = state.items.find(x=>x.id===s.id);
+        if(it){ it.count = s.count || 0; it.cost = s.cost || it.cost; }
+      }
+    }catch(e){ console.warn('Save corrupt'); }
+  }
+
+  recalcCPS();
+  renderShop();
+  updateUI();
+
+  document.getElementById('bigBtn').addEventListener('click', doClick);
+  document.getElementById('saveBtn').addEventListener('click', saveGame);
+  document.getElementById('loadBtn').addEventListener('click', loadGame);
+  document.getElementById('resetBtn').addEventListener('click', resetGame);
+  document.getElementById('buyMaxBtn').addEventListener('click', buyMaxAll);
+
+  document.getElementById('filter').addEventListener('input', (e)=> renderShop(e.target.value, currentSort));
+  document.getElementById('sortBtn').addEventListener('click', ()=>{
+    if(currentSort === 'cost') currentSort = 'cps';
+    else if(currentSort === 'cps') currentSort = 'id';
+    else currentSort = 'cost';
+    document.getElementById('sortBtn').textContent = 'Sort: ' + (currentSort === 'cost' ? 'Preis' : currentSort === 'cps' ? 'CPS' : 'ID');
+    renderShop(document.getElementById('filter').value, currentSort);
+  });
+
+  // delegated shop clicks
+  document.getElementById('shop').addEventListener('click', (e)=>{
+    const buy = e.target.closest('.buyBtn');
+    if(buy){ buyItem(parseInt(buy.dataset.id)); return; }
+    const max = e.target.closest('button[data-action="max"]');
+    if(max){ buyMax(parseInt(max.dataset.id)); return; }
+  });
+
+  // keyboard shortcuts
+  addEventListener('keydown', (e)=>{
+    if(e.code === 'Space'){ e.preventDefault(); doClick(); }
+    if(e.key.toLowerCase() === 'm') buyMaxAll();
+    if(e.key.toLowerCase() === 's') saveGame();
+    if(e.key.toLowerCase() === 'l') loadGame();
+    if(e.key.toLowerCase() === 'r') resetGame();
+  });
+
+  state.lastTick = Date.now();
+  requestAnimationFrame(tick);
+  setInterval(saveGame, 10000);
+}
+
+// start
+init();
