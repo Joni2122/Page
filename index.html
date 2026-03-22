@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>ClickerX — Red Cookie (PerClick Upgrades)</title>
+<title>ClickerX — Red Cookie (PerClick Upgrade)</title>
 <style>
   :root{
     --bg:#041018;
@@ -160,12 +160,12 @@
 
 <script>
 /* Mobile-ready ClickerX with PerClick upgrades and big inner cookie visual.
+   - First addon now increases cookies per click by +0.01 per unit
    - Items can increase CPS or PerClick (special.perClickPerCount)
-   - inner cookie is large and clickable
    - pointerdown used for mobile responsiveness
 */
 
-const SAVE_KEY = 'clickerx_mobile_perclick_v1';
+const SAVE_KEY = 'clickerx_mobile_perclick_v2';
 const SHOP_COUNT = 100;
 let state = {
   total: 0,
@@ -199,16 +199,16 @@ function fmtDisplay(n){
   return fmtShort(n);
 }
 
-// creative names
+// creative names (first item renamed to reflect perClick upgrade)
 const CREATIVE_NAMES = [
-  "AutoClicker Mk I","Cookie Drone","Sugar Synthesizer","Quantum Oven","Dragon's Breath",
+  "Click Booster","Cookie Drone","Sugar Synthesizer","Quantum Oven","Dragon's Breath",
   "Neon Mixer","Pixel Baker","Time‑Warp Kettle","Lucky Spoon","Grandma's Secret",
   "Factory Bot","Holo‑Advertiser","Cloud Mixer","Magnet Glove","Turbo Whisk",
   "Orbital Oven","Echo Harvester","Flux Conveyor","Crystal Jar","Starlight Press",
   "Pocket Blackhole","Candy Forge","Dream Mill","Aurora Tray","Zen Garden"
 ];
 
-// generate shop with some perClick upgrades
+// generate shop with perClick for first addon
 function genShop(){
   const items = [];
   for(let i=1;i<=SHOP_COUNT;i++){
@@ -216,15 +216,16 @@ function genShop(){
     const base = Math.max(5, Math.round(Math.pow(1.17, i) * (8 + i*4)));
     const cps = parseFloat((Math.pow(1.07, i) * (0.05 + i*0.04)).toFixed(3));
     const special = {};
-    // item 1: auto-click
-    if(i === 1) special.autoClickRatePerCount = 0.5; // clicks/sec per unit
-    // some items increase perClick (every 5th item)
-    if(i % 5 === 0){
-      // small perClick increase per unit, scales gently with i
-      special.perClickPerCount = parseFloat((0.2 * (1 + i/50)).toFixed(3)); // e.g. 0.2..0.6
+    // item 1: perClick upgrade +0.01 per unit
+    if(i === 1) special.perClickPerCount = 0.01;
+    // some items increase perClick (every 5th item) — keep additional perClick upgrades
+    if(i % 5 === 0 && i !== 1){
+      special.perClickPerCount = parseFloat((0.2 * (1 + i/50)).toFixed(3));
     }
     // some items give tiny bonus CPS
     if(i === 5) special.bonusPerCount = 0.02;
+    // some items provide auto-click (kept for variety at item 2)
+    if(i === 2) special.autoClickRatePerCount = 0.25; // smaller auto-click on item 2
     let anim = 'anim-spark';
     if(i % 7 === 0) anim = 'anim-gear';
     if(i % 5 === 0) anim = 'anim-flame';
@@ -255,12 +256,12 @@ function renderShop(filter='', sortBy='cost'){
     const affordable = state.cookies >= it.cost;
     div.className = 'item ' + (affordable ? 'affordable' : 'locked');
     let desc = '';
-    if(it.special && it.special.autoClickRatePerCount){
-      desc = `Auto‑clicks: +${it.special.autoClickRatePerCount}/s per unit`;
-    } else if(it.special && it.special.perClickPerCount){
+    if(it.special && it.special.perClickPerCount){
       desc = `Pro Klick: +${it.special.perClickPerCount} pro Einheit`;
+    } else if(it.special && it.special.autoClickRatePerCount){
+      desc = `Auto‑clicks: +${it.special.autoClickRatePerCount}/s per Einheit`;
     } else if(it.special && it.special.bonusPerCount){
-      desc = `Passive bonus: +${it.special.bonusPerCount} CPS per unit`;
+      desc = `Passive bonus: +${it.special.bonusPerCount} CPS per Einheit`;
     } else {
       desc = `Generates ${it.cps} CPS each`;
     }
@@ -287,8 +288,7 @@ function updateUI(){
   document.getElementById('totalDisplay').textContent = fmtDisplay(state.total);
   document.getElementById('cpsDisplay').textContent = state.cps.toFixed(2);
   document.getElementById('cookieDisplay').textContent = fmtDisplay(state.cookies);
-  // compute effective perClick (basePerClick * goldenMultiplier)
-  const effectivePerClick = (computeBasePerClick()) * goldenMultiplier;
+  const effectivePerClick = computeBasePerClick() * goldenMultiplier;
   document.getElementById('perClick').textContent = effectivePerClick.toFixed(2);
   document.getElementById('bonus').textContent = state.bonus;
   document.getElementById('ownedSummary').textContent = `Addons: ${state.items.reduce((s,i)=>s+i.count,0)}`;
@@ -318,7 +318,6 @@ function updateUI(){
 // compute base perClick from perClick upgrades
 function computeBasePerClick(){
   let base = state.basePerClick || 1;
-  // sum perClickPerCount from items
   for(const it of state.items){
     if(it.special && it.special.perClickPerCount){
       base += it.count * it.special.perClickPerCount;
