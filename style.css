@@ -1,33 +1,47 @@
 /* style.css Teil 1 */
+/* Datei: style.css */
 
 
 *{
 
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+margin:0;
+padding:0;
+box-sizing:border-box;
 
 }
 
 
 
+html,
 body{
 
-    overflow:hidden;
-    background:#000;
-    font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
+width:100%;
+height:100%;
+
+overflow:hidden;
+
+background:#000;
+
+font-family:
+Arial,
+Helvetica,
+sans-serif;
+
+touch-action:none;
 
 }
+
 
 
 
 #game{
 
-    width:100vw;
-    height:100vh;
+width:100vw;
+height:100vh;
+
+position:relative;
+
+overflow:hidden;
 
 }
 
@@ -35,69 +49,86 @@ body{
 
 canvas{
 
-    display:block;
+display:block;
+
+width:100%;
+height:100%;
 
 }
+
+
+
 
 
 
 
 /* HUD */
 
+
 #hud{
 
-    position:absolute;
+position:absolute;
 
-    top:20px;
-    left:20px;
+top:20px;
+left:20px;
 
-    z-index:10;
+z-index:10;
 
-    width:320px;
+padding:20px 25px;
 
-    padding:20px;
-
-    background:
-    rgba(
-    0,
-    0,
-    0,
-    0.55
-    );
+width:300px;
 
 
-    border-radius:20px;
+background:
+
+rgba(
+0,
+0,
+0,
+0.55
+);
 
 
-    color:white;
+border:
+
+2px solid
+
+rgba(
+255,
+255,
+255,
+0.15
+);
 
 
-    backdrop-filter:
-    blur(12px);
+
+border-radius:20px;
 
 
-    border:
-    1px solid
-    rgba(
-    255,
-    255,
-    255,
-    0.2
-    );
+backdrop-filter:
+
+blur(15px);
 
 
-    box-shadow:
-    0 0 30px
-    rgba(
-    0,
-    0,
-    0,
-    0.6
-    );
+
+box-shadow:
+
+0 0 35px
+
+rgba(
+0,
+0,
+0,
+0.6
+);
+
+
+
+color:white;
+
 
 
 }
-
 
 
 
@@ -105,28 +136,32 @@ canvas{
 #hud h1{
 
 
-    font-size:30px;
+font-size:30px;
 
 
-    letter-spacing:4px;
+letter-spacing:3px;
 
 
-    margin-bottom:15px;
+margin-bottom:15px;
 
 
-    color:white;
+
+text-align:center;
 
 
-    text-shadow:
 
-    0 0 10px
-    cyan,
+text-shadow:
 
-    0 0 25px
-    cyan;
+
+0 0 10px cyan,
+
+
+0 0 25px cyan;
+
 
 
 }
+
 
 
 
@@ -135,40 +170,30 @@ canvas{
 #speed{
 
 
-    font-size:24px;
+font-size:28px;
 
 
-    font-weight:bold;
-
-
-    margin-bottom:15px;
-
-
-    color:#00ff88;
-
-
-    text-shadow:
-
-    0 0 10px
-    #00ff88;
-
-
-}
+font-weight:bold;
 
 
 
+text-align:center;
 
 
-#controls{
+
+color:#00ff88;
 
 
-    color:#ddd;
+
+margin-bottom:15px;
 
 
-    font-size:16px;
+
+text-shadow:
 
 
-    line-height:1.7;
+0 0 15px #00ff88;
+
 
 
 }
@@ -178,34 +203,80 @@ canvas{
 
 
 
-/* Glas Effekt */
+
+/* Fullscreen Button */
 
 
-#hud::before{
+#fullscreen{
 
 
-    content:"";
+width:100%;
 
 
-    position:absolute;
+height:45px;
 
 
-    inset:0;
+border:none;
 
 
-    border-radius:20px;
+border-radius:15px;
 
 
-    background:
 
-    linear-gradient(
-    135deg,
-    rgba(255,255,255,0.18),
-    transparent
-    );
+background:
+
+linear-gradient(
+45deg,
+#00c6ff,
+#0072ff
+);
 
 
-    pointer-events:none;
+
+color:white;
+
+
+font-size:17px;
+
+
+font-weight:bold;
+
+
+
+cursor:pointer;
+
+
+
+transition:
+
+0.25s;
+
+
+
+box-shadow:
+
+0 0 15px
+
+rgba(
+0,
+150,
+255,
+0.5
+);
+
+
+
+}
+
+
+
+#fullscreen:active{
+
+
+transform:
+
+scale(0.92);
+
 
 
 }
@@ -215,274 +286,629 @@ canvas{
 
 
 
-/* Geschwindigkeits Animation */
+
+/* Mobile Buttons */
+
+
+#mobileControls{
+
+
+position:absolute;
+
+
+bottom:30px;
+
+
+left:0;
+
+
+right:0;
+
+
+z-index:20;
+
+
+
+display:flex;
+
+
+justify-content:center;
+
+
+align-items:center;
+
+
+gap:15px;
+
+
+
+}
+
+
+
+
+
+
+#mobileControls button{
+
+
+border:none;
+
+
+
+width:75px;
+
+
+height:75px;
+
+
+
+border-radius:50%;
+
+
+
+font-size:18px;
+
+
+
+font-weight:bold;
+
+
+
+color:white;
+
+
+
+background:
+
+rgba(
+0,
+0,
+0,
+0.55
+);
+
+
+
+border:
+
+2px solid
+
+rgba(
+255,
+255,
+255,
+0.3
+);
+
+
+
+backdrop-filter:
+
+blur(10px);
+
+
+
+box-shadow:
+
+0 0 20px
+
+rgba(
+0,
+0,
+0,
+0.7
+);
+
+
+
+user-select:none;
+
+
+
+}
+
+
+
+
+#mobileControls button:active{
+
+
+transform:
+
+scale(0.85);
+
+
+
+}
+
+
+
+
+
+#boost{
+
+
+background:
+
+linear-gradient(
+45deg,
+#ff8800,
+#ff0000
+)
+!important;
+
+
+
+box-shadow:
+
+0 0 25px
+
+orange;
+
+
+
+}
+
+
+
+#brake{
+
+
+background:
+
+linear-gradient(
+45deg,
+#555,
+#111
+)
+!important;
+
+
+
+}
+
+
+
+
+
+#left,
+#right{
+
+
+font-size:35px !important;
+
+
+
+}
+
+
+
+
+
+
+
+@media(
+orientation:portrait
+){
+
+
+body::before{
+
+
+content:
+
+"Bitte Handy drehen";
+
+
+position:absolute;
+
+
+inset:0;
+
+
+z-index:100;
+
+
+background:#000;
+
+
+color:white;
+
+
+display:flex;
+
+
+align-items:center;
+
+
+justify-content:center;
+
+
+font-size:30px;
+
+
+
+}
+
+
+    }
+/* style.css Teil 2 */
+/* Datei: style.css */
+
+
+#game::after{
+
+content:"";
+
+position:absolute;
+
+inset:0;
+
+pointer-events:none;
+
+
+background:
+
+radial-gradient(
+circle,
+transparent 45%,
+rgba(
+0,
+0,
+0,
+0.45
+)
+);
+
+
+
+}
+
+
+
+
+
+
+
+/* Game Feeling verbessern */
+
+
+#hud{
+
+animation:
+
+hudIn 1s ease;
+
+
+
+}
+
+
+
+@keyframes hudIn{
+
+
+from{
+
+
+opacity:0;
+
+
+transform:
+
+translateY(-40px);
+
+
+
+}
+
+
+
+to{
+
+
+opacity:1;
+
+
+transform:
+
+translateY(0);
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+/* Boost Effekt */
+
+
+.boosting{
+
+
+filter:
+
+brightness(1.3)
+contrast(1.2);
+
+
+
+}
+
+
+
+
+
+
+
+
+/* Landschaft Übergang */
+
+
+canvas{
+
+
+image-rendering:auto;
+
+
+}
+
+
+
+
+
+
+
+
+/* Querformat optimiert */
+
+
+@media(
+orientation:landscape
+){
+
+
+
+#hud{
+
+
+top:15px;
+
+
+left:15px;
+
+
+width:260px;
+
+
+
+}
+
+
+
+
+#hud h1{
+
+
+font-size:24px;
+
+
+}
+
 
 
 #speed{
 
-    animation:
-    pulse 2s infinite;
+
+font-size:22px;
+
 
 }
 
 
 
-@keyframes pulse{
+
+
+#mobileControls{
+
+
+bottom:25px;
+
+
+
+}
+
+
+
+#mobileControls button{
+
+
+width:85px;
+
+
+height:85px;
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+/* Kleine Geräte */
+
+
+@media(
+max-height:600px
+){
+
+
+#hud{
+
+
+padding:12px;
+
+
+}
+
+
+
+#mobileControls button{
+
+
+width:65px;
+
+
+height:65px;
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+/* Extra Premium UI */
+
+
+#fullscreen:hover{
+
+
+transform:
+
+scale(1.05);
+
+
+
+box-shadow:
+
+0 0 30px
+
+cyan;
+
+
+
+}
+
+
+
+
+
+/* Button Glanz */
+
+
+#mobileControls button::after{
+
+
+content:"";
+
+
+position:absolute;
+
+
+inset:0;
+
+
+border-radius:50%;
+
+
+background:
+
+linear-gradient(
+135deg,
+rgba(255,255,255,0.3),
+transparent
+);
+
+
+
+pointer-events:none;
+
+
+
+}
+
+
+
+
+
+
+/* Drift Vorbereitung */
+
+
+.drift{
+
+
+animation:
+
+driftShake
+0.15s
+infinite;
+
+
+
+}
+
+
+
+@keyframes driftShake{
 
 
 0%{
 
-    opacity:0.8;
+
+transform:
+
+rotate(-1deg);
+
+
 
 }
 
 
 50%{
 
-    opacity:1;
+
+transform:
+
+rotate(1deg);
+
+
 
 }
 
 
 100%{
 
-    opacity:0.8;
 
-}
+transform:
 
+rotate(-1deg);
 
-}
 
-
-
-
-
-/* Mobile Anpassung */
-
-
-@media(max-width:700px){
-
-
-#hud{
-
-
-    width:260px;
-
-
-    top:10px;
-
-
-    left:10px;
-
-
-    padding:15px;
-
-
-}
-
-
-
-#hud h1{
-
-
-    font-size:22px;
-
-
-}
-
-
-
-#speed{
-
-
-    font-size:19px;
-
-
-}
-
-
-
-#controls{
-
-
-    font-size:13px;
-
-
-}
-
-
-
-}
-
-
-
-
-/* Touch Optimierung */
-
-
-canvas{
-
-
-    touch-action:none;
-
-
-  }
-/* style.css Teil 2 */
-
-
-
-/* Premium Game Look */
-
-
-#hud{
-
-    transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-
-}
-
-
-
-#hud:hover{
-
-    transform:
-    scale(1.03);
-
-
-    box-shadow:
-
-    0 0 40px
-    rgba(
-    0,
-    255,
-    255,
-    0.4
-    );
-
-}
-
-
-
-
-
-/* Bildschirm-Effekte */
-
-
-#game::after{
-
-    content:"";
-
-
-    position:absolute;
-
-
-    inset:0;
-
-
-    pointer-events:none;
-
-
-    background:
-
-    radial-gradient(
-    circle,
-    transparent 50%,
-    rgba(
-    0,
-    0,
-    0,
-    0.35
-    )
-    );
-
-
-}
-
-
-
-
-
-/* Start-Fade */
-
-
-#game{
-
-    animation:
-
-    gameStart
-    1.5s
-    ease;
-
-}
-
-
-
-@keyframes gameStart{
-
-
-from{
-
-    opacity:0;
-
-    transform:
-    scale(1.05);
-
-}
-
-
-to{
-
-    opacity:1;
-
-    transform:
-    scale(1);
-
-}
-
-
-}
-
-
-
-
-
-
-/* Kleine Animationen für UI */
-
-
-#controls{
-
-
-    animation:
-
-    slideIn
-    1s
-    ease;
-
-}
-
-
-
-@keyframes slideIn{
-
-
-from{
-
-    opacity:0;
-
-    transform:
-    translateX(-30px);
-
-}
-
-
-to{
-
-    opacity:1;
-
-    transform:
-    translateX(0);
 
 }
 
@@ -495,62 +921,145 @@ to{
 
 
 
-/* Zukünftige Buttons */
+/* Nitro Anzeige vorbereitet */
+
+
+#nitro{
+
+
+position:absolute;
+
+
+right:20px;
+
+
+bottom:30px;
+
+
+width:180px;
+
+
+height:20px;
+
+
+
+background:
+
+rgba(
+0,
+0,
+0,
+0.5
+);
+
+
+
+border-radius:20px;
+
+
+overflow:hidden;
+
+
+
+}
+
+
+
+#nitroFill{
+
+
+height:100%;
+
+
+width:100%;
+
+
+background:
+
+linear-gradient(
+90deg,
+cyan,
+blue
+);
+
+
+
+}
+
+
+
+
+
+
+
+/* Open World Menü vorbereitet */
+
+
+.menu{
+
+
+position:absolute;
+
+
+top:50%;
+
+
+left:50%;
+
+
+transform:
+
+translate(-50%,-50%);
+
+
+
+padding:40px;
+
+
+border-radius:25px;
+
+
+background:
+
+rgba(
+0,
+0,
+0,
+0.7
+);
+
+
+
+color:white;
+
+
+backdrop-filter:
+
+blur(20px);
+
+
+
+}
+
+
+
+
+
+
+
+/* Verhindert Markieren */
 
 
 button{
 
 
-    border:none;
+-webkit-user-select:none;
 
 
-    padding:
-
-    14px 28px;
+user-select:none;
 
 
-    border-radius:15px;
-
-
-    background:
-
-    linear-gradient(
-    45deg,
-    #00ffff,
-    #0066ff
-    );
-
-
-    color:white;
-
-
-    font-size:18px;
-
-
-    cursor:pointer;
-
-
-    transition:
-
-    0.3s;
-
-
-}
-
-
-
-button:hover{
-
-
-    transform:
-
-    scale(1.08);
-
-
-    box-shadow:
-
-    0 0 25px
-    cyan;
+-webkit-touch-callout:none;
 
 
 }
@@ -560,208 +1069,14 @@ button:hover{
 
 
 
-/* Schadensanzeige / Missionen vorbereitet */
 
-
-.panel{
-
-
-    position:absolute;
-
-
-    right:20px;
-
-
-    top:20px;
-
-
-    padding:20px;
-
-
-    border-radius:20px;
-
-
-    background:
-
-    rgba(
-    0,
-    0,
-    0,
-    0.5
-    );
-
-
-    color:white;
-
-
-    backdrop-filter:
-
-    blur(10px);
-
-
-}
-
-
-
-
-
-/* Wetter Effekte vorbereitet */
-
-
-.rain{
-
-
-    filter:
-
-    brightness(0.7)
-    contrast(1.2);
-
-
-}
-
-
-
-.night{
-
-
-    filter:
-
-    brightness(0.45)
-    saturate(1.3);
-
-
-}
-
-
-
-
-
-
-/* Handy Steuerung vorbereitet */
-
-
-.mobile-control{
-
-
-    position:absolute;
-
-
-    bottom:40px;
-
-
-    width:80px;
-
-
-    height:80px;
-
-
-    border-radius:50%;
-
-
-    background:
-
-    rgba(
-    255,
-    255,
-    255,
-    0.2
-    );
-
-
-    color:white;
-
-
-    display:flex;
-
-
-    align-items:center;
-
-
-    justify-content:center;
-
-
-    font-size:30px;
-
-
-    user-select:none;
-
-
-}
-
-
-
-
-
-.left-control{
-
-
-    left:40px;
-
-
-}
-
-
-
-
-
-.right-control{
-
-
-    right:40px;
-
-
-}
-
-
-
-
-
-/* Open World Loading Overlay */
-
-
-.loading{
-
-
-    position:absolute;
-
-
-    inset:0;
-
-
-    background:#000;
-
-
-    display:flex;
-
-
-    align-items:center;
-
-
-    justify-content:center;
-
-
-    color:white;
-
-
-    font-size:40px;
-
-
-    z-index:20;
-
-
-}
-
-
-
-
-
-/* Performance */
+/* Performance für Handy */
 
 
 *{
 
 
-    -webkit-tap-highlight-color:transparent;
+-webkit-tap-highlight-color:transparent;
 
 
-  }
+}
