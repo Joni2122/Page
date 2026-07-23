@@ -1,5 +1,5 @@
 <!-- index.html Teil 1 -->
-<!-- Datei: index.html -->
+<!-- Urban Drive Challenge V3 -->
 
 <!DOCTYPE html>
 <html lang="de">
@@ -10,10 +10,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<title>Open World Drive V2</title>
+<title>Urban Drive Challenge V3</title>
 
 <link rel="stylesheet" href="style.css">
-
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
@@ -26,49 +25,71 @@
 <div id="game">
 
 
-<div id="hud">
+<!-- kleines HUD -->
 
-<h1>OPEN WORLD DRIVE</h1>
+<div id="hud">
 
 <div id="speed">
 0 km/h
 </div>
 
+<div id="nitro">
+Nitro: 100%
+</div>
+
 <button id="fullscreen">
-⛶ Fullscreen
+⛶
 </button>
 
 </div>
 
 
 
-<div id="mobileControls">
+
+<!-- Lenkrad -->
+
+<div id="steering">
+
+<div id="wheel">
+
+🚗
+
+</div>
+
+</div>
 
 
-<button id="left">
-◀
-</button>
 
 
-<button id="boost">
-BOOST
+
+<!-- Pedale -->
+
+<div id="pedals">
+
+<button id="gas">
+
+▲<br>
+GAS
+
 </button>
 
 
 <button id="brake">
-BRAKE
+
+▼<br>
+BREMSE
+
 </button>
 
+</div>
 
-<button id="right">
-▶
-</button>
+
+
 
 
 </div>
 
 
-</div>
 
 
 
@@ -84,20 +105,27 @@ let car;
 
 
 let speed = 0;
-let maxSpeed = 2.5;
 
-let acceleration = 0;
+let steering = 0;
 
-let rotation = 0;
-
-let boosting = false;
+let wheelRotation = 0;
 
 
-let keys = {};
+let gas = false;
+let brake = false;
 
-let wheels = [];
+let boost = false;
 
-let ramps = [];
+
+
+let wheels=[];
+
+let ramps=[];
+
+let buildings=[];
+
+
+let keys={};
 
 
 
@@ -106,10 +134,15 @@ let ramps = [];
 function init(){
 
 
-scene = new THREE.Scene();
+scene =
+new THREE.Scene();
+
 
 scene.background =
-new THREE.Color(0x8bdcff);
+new THREE.Color(
+0x8bdcff
+);
+
 
 
 
@@ -125,10 +158,14 @@ window.innerWidth/window.innerHeight,
 
 
 
+
 renderer =
-new THREE.WebGLRenderer({
+new THREE.WebGLRenderer(
+{
 antialias:true
-});
+}
+);
+
 
 
 renderer.setSize(
@@ -137,7 +174,9 @@ window.innerHeight
 );
 
 
+
 renderer.shadowMap.enabled=true;
+
 
 
 document
@@ -150,31 +189,31 @@ renderer.domElement
 
 
 
-let light =
+let sun =
 new THREE.DirectionalLight(
 0xffffff,
 2
 );
 
 
-light.position.set(
-200,
+sun.position.set(
 300,
-100
+500,
+200
 );
 
 
-light.castShadow=true;
+sun.castShadow=true;
 
 
-scene.add(light);
+scene.add(sun);
 
 
 
 scene.add(
 new THREE.AmbientLight(
 0xffffff,
-0.6
+0.5
 )
 );
 
@@ -191,7 +230,7 @@ createCar();
 
 camera.position.set(
 0,
-6,
+7,
 15
 );
 
@@ -200,8 +239,8 @@ camera.position.set(
 animate();
 
 
-
 }
+
 
 
 
@@ -214,6 +253,9 @@ function createWorld(){
 
 
 
+// Boden
+
+
 let ground =
 new THREE.Mesh(
 
@@ -222,9 +264,11 @@ new THREE.PlaneGeometry(
 5000
 ),
 
-new THREE.MeshStandardMaterial({
-color:0x3b9638
-})
+new THREE.MeshStandardMaterial(
+{
+color:0x39913a
+}
+)
 
 );
 
@@ -241,57 +285,43 @@ scene.add(ground);
 
 
 
-// Straße mit durchgehender Linie
+
+// Straßen-Netz
 
 
-let road =
-new THREE.Mesh(
+createRoad(
+0,
+0,
+40,
+2500
+);
 
-new THREE.BoxGeometry(
-50,
-0.1,
-3000
-),
 
-new THREE.MeshStandardMaterial({
-color:0x242424
-})
-
+createRoad(
+0,
+0,
+2500,
+40
 );
 
 
 
-road.position.y=0.05;
-
-
-scene.add(road);
-
-
-
-
-
-
-let line =
-new THREE.Mesh(
-
-new THREE.BoxGeometry(
-0.5,
-0.03,
-3000
-),
-
-new THREE.MeshBasicMaterial({
-color:0xffff00
-})
-
+createRoad(
+500,
+0,
+30,
+1500
 );
 
 
 
-line.position.y=0.12;
+createRoad(
+-500,
+0,
+30,
+1500
+);
 
-
-scene.add(line);
 
 
 
@@ -302,21 +332,21 @@ scene.add(line);
 
 
 for(
-let x=-400;
-x<=400;
-x+=80
+let x=-800;
+x<=800;
+x+=100
 ){
 
-
 for(
-let z=-600;
-z<=600;
-z+=80
+let z=-800;
+z<=800;
+z+=100
 ){
 
 
 if(
-Math.abs(x)<80
+Math.abs(x)<120 &&
+Math.abs(z)<120
 )
 continue;
 
@@ -331,7 +361,6 @@ z
 
 }
 
-
 }
 
 
@@ -339,23 +368,107 @@ z
 
 
 
-// Rampen
 
-
-for(
-let i=0;
-i<5;
-i++
-){
+// Parcours
 
 
 createRamp(
 0,
--200-i*150
+-250
+);
+
+
+createRamp(
+0,
+-500
+);
+
+
+createRamp(
+100,
+-700
 );
 
 
 }
+
+
+
+
+
+
+
+function createRoad(
+x,
+z,
+w,
+l
+){
+
+
+
+let road =
+new THREE.Mesh(
+
+new THREE.BoxGeometry(
+w,
+0.05,
+l
+),
+
+new THREE.MeshStandardMaterial(
+{
+color:0x222222
+}
+)
+
+);
+
+
+
+road.position.set(
+x,
+0.02,
+z
+);
+
+
+
+scene.add(road);
+
+
+
+
+
+
+let stripe =
+new THREE.Mesh(
+
+new THREE.BoxGeometry(
+0.4,
+0.02,
+l
+),
+
+new THREE.MeshBasicMaterial(
+{
+color:0xffff00
+}
+)
+
+);
+
+
+
+stripe.position.set(
+x,
+0.06,
+z
+);
+
+
+
+scene.add(stripe);
 
 
 
@@ -369,35 +482,36 @@ createRamp(
 
 
 function createBuilding(
-x,
-z
+x,z
 ){
 
 
-let height =
+let h =
 20+
-Math.random()*80;
+Math.random()*100;
+
 
 
 let building =
 new THREE.Mesh(
 
 new THREE.BoxGeometry(
-40,
-height,
-40
+45,
+h,
+45
 ),
 
-new THREE.MeshStandardMaterial({
-
+new THREE.MeshStandardMaterial(
+{
 color:
 new THREE.Color(
 Math.random(),
 Math.random(),
 Math.random()
 )
+}
 
-})
+)
 
 );
 
@@ -405,9 +519,12 @@ Math.random()
 
 building.position.set(
 x,
-height/2,
+h/2,
 z
 );
+
+
+building.castShadow=true;
 
 
 
@@ -415,11 +532,12 @@ scene.add(building);
 
 
 
+buildings.push(building);
+
+
+
 }
-
-
-
-
+  /* index.html Teil 2 */
 
 
 function createRamp(
@@ -432,27 +550,29 @@ let ramp =
 new THREE.Mesh(
 
 new THREE.BoxGeometry(
-20,
-3,
-40
+25,
+4,
+50
 ),
 
-new THREE.MeshStandardMaterial({
+new THREE.MeshStandardMaterial(
+{
 color:0xff8800
-})
+}
+
+)
 
 );
 
 
 
 ramp.rotation.x =
--Math.PI/10;
-
+-Math.PI/8;
 
 
 ramp.position.set(
 x,
-1,
+2,
 z
 );
 
@@ -475,14 +595,13 @@ ramps.push(ramp);
 function createCar(){
 
 
-
 car =
 new THREE.Group();
 
 
 
 
-// Hauptkörper
+// Karosserie
 
 
 let body =
@@ -490,13 +609,18 @@ new THREE.Mesh(
 
 new THREE.BoxGeometry(
 5,
-1.2,
+1.3,
 10
 ),
 
-new THREE.MeshStandardMaterial({
-color:0xff1111
-})
+new THREE.MeshStandardMaterial(
+{
+color:0xff2222,
+metalness:0.5,
+roughness:0.3
+}
+
+)
 
 );
 
@@ -505,8 +629,6 @@ color:0xff1111
 body.position.y=1;
 
 
-body.castShadow=true;
-
 
 car.add(body);
 
@@ -514,118 +636,88 @@ car.add(body);
 
 
 
-// Motorhaube
+// Dach
 
 
-let hood =
-new THREE.Mesh(
-
-new THREE.BoxGeometry(
-4.5,
-0.3,
-3
-),
-
-new THREE.MeshStandardMaterial({
-color:0xdd0000
-})
-
-);
-
-
-
-hood.position.set(
-0,
-1.7,
-3
-);
-
-
-car.add(hood);
-
-
-
-
-
-// Fenster
-
-
-let windowMesh =
+let roof =
 new THREE.Mesh(
 
 new THREE.BoxGeometry(
 3.5,
 1,
-3
+4
 ),
 
-new THREE.MeshStandardMaterial({
+new THREE.MeshStandardMaterial(
+{
 color:0x111111
-})
+}
+
+)
 
 );
 
 
 
-windowMesh.position.set(
+roof.position.set(
 0,
 2,
--1
-);
-
-
-car.add(windowMesh);
-
-
-
-
-
-
-// Spoiler
-
-
-let spoiler =
-new THREE.Mesh(
-
-new THREE.BoxGeometry(
-6,
-0.2,
-0.5
-),
-
-new THREE.MeshStandardMaterial({
-color:0x050505
-})
-
+-0.5
 );
 
 
 
-spoiler.position.set(
-0,
-2,
--5
+car.add(roof);
+
+
+
+
+
+
+// Räder
+
+
+createWheel(
+-2.5,
+1,
+-3
 );
 
 
-car.add(spoiler);
+createWheel(
+2.5,
+1,
+-3
+);
 
 
+createWheel(
+-2.5,
+1,
+3
+);
 
 
+createWheel(
+2.5,
+1,
+3
+);
 
-createWheel(-2.5,1,-3);
-createWheel(2.5,1,-3);
-createWheel(-2.5,1,3);
-createWheel(2.5,1,3);
+
 
 
 
 scene.add(car);
 
 
+
 }
-<!-- index.html Teil 2 -->
+
+
+
+
+
 
 
 function createWheel(
@@ -645,9 +737,12 @@ new THREE.CylinderGeometry(
 24
 ),
 
-new THREE.MeshStandardMaterial({
+new THREE.MeshStandardMaterial(
+{
 color:0x050505
-})
+}
+
+)
 
 );
 
@@ -655,6 +750,7 @@ color:0x050505
 
 wheel.rotation.z =
 Math.PI/2;
+
 
 
 wheel.position.set(
@@ -679,59 +775,34 @@ wheels.push(wheel);
 
 
 
+
+
+// Auto Physik
+
+
 function updateCar(){
 
 
 
-// Gas
+if(gas){
 
-
-if(
-keys["w"]
-){
-
-speed += 0.03;
-
+speed +=0.03;
 
 }
 
 
 
-// Rückwärts
+if(brake){
 
-
-if(
-keys["s"]
-){
-
-speed -= 0.04;
-
+speed -=0.04;
 
 }
 
 
 
-// Bremsen
+if(boost){
 
-
-if(
-keys[" "]
-){
-
-speed *= 0.85;
-
-
-}
-
-
-
-
-// Boost
-
-
-if(boosting){
-
-speed +=0.08;
+speed +=0.07;
 
 }
 
@@ -739,22 +810,8 @@ speed +=0.08;
 
 
 
-// Reibung
 
-
-if(
-!keys["w"] &&
-!keys["s"]
-&&
-!boosting
-){
-
-speed*=0.98;
-
-
-}
-
-
+speed*=0.985;
 
 
 
@@ -762,9 +819,9 @@ speed =
 Math.max(
 Math.min(
 speed,
-maxSpeed
+2.5
 ),
--1
+-0.8
 );
 
 
@@ -772,52 +829,24 @@ maxSpeed
 
 
 
-// Lenken
+
+// Lenkrad Steuerung
 
 
-
-if(
-keys["a"]
-){
-
-rotation +=
-0.03 *
-Math.abs(speed);
-
-
-}
-
-
-
-if(
-keys["d"]
-){
-
-rotation -=
-0.03 *
-Math.abs(speed);
-
-
-}
+car.rotation.y +=
+steering *
+speed *
+0.02;
 
 
 
 
-car.rotation.y =
-rotation;
-
-
-
-
-
-
-// Bewegung mit Physik
 
 
 car.position.x -=
 
 Math.sin(
-rotation
+car.rotation.y
 )
 *
 speed;
@@ -827,10 +856,11 @@ speed;
 car.position.z -=
 
 Math.cos(
-rotation
+car.rotation.y
 )
 *
 speed;
+
 
 
 
@@ -842,12 +872,10 @@ speed;
 
 
 wheels.forEach(
-wheel=>{
+w=>{
 
-
-wheel.rotation.x +=
+w.rotation.x +=
 speed*0.5;
-
 
 }
 
@@ -858,27 +886,33 @@ speed*0.5;
 
 
 
-// Kamera hinter Auto
+// Kamera
 
 
-let cameraTarget =
+let cam =
 new THREE.Vector3(
 
-car.position.x +
-Math.sin(rotation)*15,
+car.position.x+
+Math.sin(
+car.rotation.y
+)
+*15,
 
-8,
+7,
 
 
-car.position.z +
-Math.cos(rotation)*15
+car.position.z+
+Math.cos(
+car.rotation.y
+)
+*15
 
 );
 
 
 
 camera.position.lerp(
-cameraTarget,
+cam,
 0.08
 );
 
@@ -893,13 +927,12 @@ car.position
 
 
 
-
 document
 .getElementById("speed")
 .innerHTML =
 
 Math.round(
-Math.abs(speed*100)
+Math.abs(speed*80)
 )
 +
 " km/h";
@@ -907,6 +940,183 @@ Math.abs(speed*100)
 
 
 }
+
+
+
+
+
+
+
+
+// Virtuelles Lenkrad
+
+
+let wheel =
+document.getElementById(
+"wheel"
+);
+
+
+
+let dragging=false;
+
+let startX=0;
+
+
+
+wheel.addEventListener(
+"touchstart",
+e=>{
+
+dragging=true;
+
+startX =
+e.touches[0].clientX;
+
+}
+
+);
+
+
+
+wheel.addEventListener(
+"touchmove",
+e=>{
+
+
+if(!dragging)
+return;
+
+
+let x =
+e.touches[0].clientX;
+
+
+let diff =
+x-startX;
+
+
+
+steering =
+diff/100;
+
+
+wheelRotation =
+diff;
+
+
+
+wheel.style.transform =
+"rotate("+diff+"deg)";
+
+
+}
+
+);
+
+
+
+wheel.addEventListener(
+"touchend",
+()=>{
+
+
+dragging=false;
+
+
+steering=0;
+
+
+wheel.style.transform =
+"rotate(0deg)";
+
+
+}
+
+);
+
+
+
+
+
+
+
+
+
+// Pedale
+
+
+document
+.getElementById("gas")
+.ontouchstart =
+()=>{
+
+gas=true;
+
+};
+
+
+
+document
+.getElementById("gas")
+.ontouchend =
+()=>{
+
+gas=false;
+
+};
+
+
+
+
+
+document
+.getElementById("brake")
+.ontouchstart =
+()=>{
+
+brake=true;
+
+};
+
+
+
+document
+.getElementById("brake")
+.ontouchend =
+()=>{
+
+brake=false;
+
+};
+
+
+
+
+
+
+
+
+
+// Fullscreen
+
+
+document
+.getElementById("fullscreen")
+.onclick =
+()=>{
+
+
+if(
+document.documentElement.requestFullscreen
+){
+
+document.documentElement.requestFullscreen();
+
+}
+
+
+};
 
 
 
@@ -943,148 +1153,6 @@ camera
 
 
 
-// Tastatur
-
-
-window.addEventListener(
-"keydown",
-e=>{
-
-
-keys[
-e.key.toLowerCase()
-]=true;
-
-
-}
-);
-
-
-
-window.addEventListener(
-"keyup",
-e=>{
-
-
-keys[
-e.key.toLowerCase()
-]=false;
-
-
-}
-);
-
-
-
-
-
-
-
-// Handy Steuerung
-
-
-
-document
-.getElementById("boost")
-.ontouchstart =
-()=>{
-
-boosting=true;
-
-};
-
-
-
-document
-.getElementById("boost")
-.ontouchend =
-()=>{
-
-boosting=false;
-
-};
-
-
-
-
-
-document
-.getElementById("brake")
-.ontouchstart =
-()=>{
-
-keys[" "]=true;
-
-};
-
-
-
-document
-.getElementById("brake")
-.ontouchend =
-()=>{
-
-keys[" "]=false;
-
-};
-
-
-
-
-
-
-document
-.getElementById("left")
-.ontouchstart =
-()=>{
-
-keys["a"]=true;
-
-};
-
-
-
-document
-.getElementById("left")
-.ontouchend =
-()=>{
-
-keys["a"]=false;
-
-};
-
-
-
-
-
-
-
-document
-.getElementById("right")
-.ontouchstart =
-()=>{
-
-keys["d"]=true;
-
-};
-
-
-
-document
-.getElementById("right")
-.ontouchend =
-()=>{
-
-keys["d"]=false;
-
-};
-
-
-
-
-
-
-
 window.addEventListener(
 "resize",
 ()=>{
@@ -1105,8 +1173,8 @@ window.innerHeight
 );
 
 
-}
 
+}
 );
 
 
@@ -1114,34 +1182,8 @@ window.innerHeight
 
 
 
-
-// Fullscreen
-
-
-document
-.getElementById("fullscreen")
-.onclick =
-()=>{
-
-
-if(
-document.documentElement.requestFullscreen
-){
-
-document.documentElement.requestFullscreen();
-
-
-}
-
-
-};
-
-
-
-
-
-
 init();
+
 
 
 </script>
