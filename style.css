@@ -1,0 +1,767 @@
+/* style.css Teil 1 */
+
+
+*{
+
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+
+}
+
+
+
+body{
+
+    overflow:hidden;
+    background:#000;
+    font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+}
+
+
+
+#game{
+
+    width:100vw;
+    height:100vh;
+
+}
+
+
+
+canvas{
+
+    display:block;
+
+}
+
+
+
+
+/* HUD */
+
+#hud{
+
+    position:absolute;
+
+    top:20px;
+    left:20px;
+
+    z-index:10;
+
+    width:320px;
+
+    padding:20px;
+
+    background:
+    rgba(
+    0,
+    0,
+    0,
+    0.55
+    );
+
+
+    border-radius:20px;
+
+
+    color:white;
+
+
+    backdrop-filter:
+    blur(12px);
+
+
+    border:
+    1px solid
+    rgba(
+    255,
+    255,
+    255,
+    0.2
+    );
+
+
+    box-shadow:
+    0 0 30px
+    rgba(
+    0,
+    0,
+    0,
+    0.6
+    );
+
+
+}
+
+
+
+
+
+#hud h1{
+
+
+    font-size:30px;
+
+
+    letter-spacing:4px;
+
+
+    margin-bottom:15px;
+
+
+    color:white;
+
+
+    text-shadow:
+
+    0 0 10px
+    cyan,
+
+    0 0 25px
+    cyan;
+
+
+}
+
+
+
+
+
+#speed{
+
+
+    font-size:24px;
+
+
+    font-weight:bold;
+
+
+    margin-bottom:15px;
+
+
+    color:#00ff88;
+
+
+    text-shadow:
+
+    0 0 10px
+    #00ff88;
+
+
+}
+
+
+
+
+
+#controls{
+
+
+    color:#ddd;
+
+
+    font-size:16px;
+
+
+    line-height:1.7;
+
+
+}
+
+
+
+
+
+
+/* Glas Effekt */
+
+
+#hud::before{
+
+
+    content:"";
+
+
+    position:absolute;
+
+
+    inset:0;
+
+
+    border-radius:20px;
+
+
+    background:
+
+    linear-gradient(
+    135deg,
+    rgba(255,255,255,0.18),
+    transparent
+    );
+
+
+    pointer-events:none;
+
+
+}
+
+
+
+
+
+
+/* Geschwindigkeits Animation */
+
+
+#speed{
+
+    animation:
+    pulse 2s infinite;
+
+}
+
+
+
+@keyframes pulse{
+
+
+0%{
+
+    opacity:0.8;
+
+}
+
+
+50%{
+
+    opacity:1;
+
+}
+
+
+100%{
+
+    opacity:0.8;
+
+}
+
+
+}
+
+
+
+
+
+/* Mobile Anpassung */
+
+
+@media(max-width:700px){
+
+
+#hud{
+
+
+    width:260px;
+
+
+    top:10px;
+
+
+    left:10px;
+
+
+    padding:15px;
+
+
+}
+
+
+
+#hud h1{
+
+
+    font-size:22px;
+
+
+}
+
+
+
+#speed{
+
+
+    font-size:19px;
+
+
+}
+
+
+
+#controls{
+
+
+    font-size:13px;
+
+
+}
+
+
+
+}
+
+
+
+
+/* Touch Optimierung */
+
+
+canvas{
+
+
+    touch-action:none;
+
+
+  }
+/* style.css Teil 2 */
+
+
+
+/* Premium Game Look */
+
+
+#hud{
+
+    transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
+}
+
+
+
+#hud:hover{
+
+    transform:
+    scale(1.03);
+
+
+    box-shadow:
+
+    0 0 40px
+    rgba(
+    0,
+    255,
+    255,
+    0.4
+    );
+
+}
+
+
+
+
+
+/* Bildschirm-Effekte */
+
+
+#game::after{
+
+    content:"";
+
+
+    position:absolute;
+
+
+    inset:0;
+
+
+    pointer-events:none;
+
+
+    background:
+
+    radial-gradient(
+    circle,
+    transparent 50%,
+    rgba(
+    0,
+    0,
+    0,
+    0.35
+    )
+    );
+
+
+}
+
+
+
+
+
+/* Start-Fade */
+
+
+#game{
+
+    animation:
+
+    gameStart
+    1.5s
+    ease;
+
+}
+
+
+
+@keyframes gameStart{
+
+
+from{
+
+    opacity:0;
+
+    transform:
+    scale(1.05);
+
+}
+
+
+to{
+
+    opacity:1;
+
+    transform:
+    scale(1);
+
+}
+
+
+}
+
+
+
+
+
+
+/* Kleine Animationen für UI */
+
+
+#controls{
+
+
+    animation:
+
+    slideIn
+    1s
+    ease;
+
+}
+
+
+
+@keyframes slideIn{
+
+
+from{
+
+    opacity:0;
+
+    transform:
+    translateX(-30px);
+
+}
+
+
+to{
+
+    opacity:1;
+
+    transform:
+    translateX(0);
+
+}
+
+
+}
+
+
+
+
+
+
+
+/* Zukünftige Buttons */
+
+
+button{
+
+
+    border:none;
+
+
+    padding:
+
+    14px 28px;
+
+
+    border-radius:15px;
+
+
+    background:
+
+    linear-gradient(
+    45deg,
+    #00ffff,
+    #0066ff
+    );
+
+
+    color:white;
+
+
+    font-size:18px;
+
+
+    cursor:pointer;
+
+
+    transition:
+
+    0.3s;
+
+
+}
+
+
+
+button:hover{
+
+
+    transform:
+
+    scale(1.08);
+
+
+    box-shadow:
+
+    0 0 25px
+    cyan;
+
+
+}
+
+
+
+
+
+
+/* Schadensanzeige / Missionen vorbereitet */
+
+
+.panel{
+
+
+    position:absolute;
+
+
+    right:20px;
+
+
+    top:20px;
+
+
+    padding:20px;
+
+
+    border-radius:20px;
+
+
+    background:
+
+    rgba(
+    0,
+    0,
+    0,
+    0.5
+    );
+
+
+    color:white;
+
+
+    backdrop-filter:
+
+    blur(10px);
+
+
+}
+
+
+
+
+
+/* Wetter Effekte vorbereitet */
+
+
+.rain{
+
+
+    filter:
+
+    brightness(0.7)
+    contrast(1.2);
+
+
+}
+
+
+
+.night{
+
+
+    filter:
+
+    brightness(0.45)
+    saturate(1.3);
+
+
+}
+
+
+
+
+
+
+/* Handy Steuerung vorbereitet */
+
+
+.mobile-control{
+
+
+    position:absolute;
+
+
+    bottom:40px;
+
+
+    width:80px;
+
+
+    height:80px;
+
+
+    border-radius:50%;
+
+
+    background:
+
+    rgba(
+    255,
+    255,
+    255,
+    0.2
+    );
+
+
+    color:white;
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+    font-size:30px;
+
+
+    user-select:none;
+
+
+}
+
+
+
+
+
+.left-control{
+
+
+    left:40px;
+
+
+}
+
+
+
+
+
+.right-control{
+
+
+    right:40px;
+
+
+}
+
+
+
+
+
+/* Open World Loading Overlay */
+
+
+.loading{
+
+
+    position:absolute;
+
+
+    inset:0;
+
+
+    background:#000;
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+    color:white;
+
+
+    font-size:40px;
+
+
+    z-index:20;
+
+
+}
+
+
+
+
+
+/* Performance */
+
+
+*{
+
+
+    -webkit-tap-highlight-color:transparent;
+
+
+  }
