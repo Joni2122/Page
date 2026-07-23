@@ -1,5 +1,5 @@
 /* style.css Teil 1 */
-/* Datei: style.css */
+/* Urban Drive Challenge V3 */
 
 
 *{
@@ -34,6 +34,7 @@ touch-action:none;
 
 
 
+
 #game{
 
 width:100vw;
@@ -47,12 +48,10 @@ overflow:hidden;
 
 
 
+
 canvas{
 
 display:block;
-
-width:100%;
-height:100%;
 
 }
 
@@ -62,21 +61,25 @@ height:100%;
 
 
 
-/* HUD */
+/* kleines HUD oben links */
 
 
 #hud{
 
 position:absolute;
 
-top:20px;
-left:20px;
+top:15px;
+
+left:15px;
 
 z-index:10;
 
-padding:20px 25px;
 
-width:300px;
+width:160px;
+
+
+padding:10px;
+
 
 
 background:
@@ -89,38 +92,8 @@ rgba(
 );
 
 
-border:
 
-2px solid
-
-rgba(
-255,
-255,
-255,
-0.15
-);
-
-
-
-border-radius:20px;
-
-
-backdrop-filter:
-
-blur(15px);
-
-
-
-box-shadow:
-
-0 0 35px
-
-rgba(
-0,
-0,
-0,
-0.6
-);
+border-radius:15px;
 
 
 
@@ -128,39 +101,40 @@ color:white;
 
 
 
+backdrop-filter:
+
+blur(10px);
+
+
+
+border:
+
+1px solid
+
+rgba(
+255,
+255,
+255,
+0.2
+);
+
+
+
+box-shadow:
+
+0 0 20px
+
+rgba(
+0,
+0,
+0,
+0.5
+);
+
+
+
 }
 
-
-
-
-#hud h1{
-
-
-font-size:30px;
-
-
-letter-spacing:3px;
-
-
-margin-bottom:15px;
-
-
-
-text-align:center;
-
-
-
-text-shadow:
-
-
-0 0 10px cyan,
-
-
-0 0 25px cyan;
-
-
-
-}
 
 
 
@@ -170,11 +144,10 @@ text-shadow:
 #speed{
 
 
-font-size:28px;
+font-size:22px;
 
 
 font-weight:bold;
-
 
 
 text-align:center;
@@ -185,14 +158,28 @@ color:#00ff88;
 
 
 
-margin-bottom:15px;
-
-
-
 text-shadow:
 
+0 0 10px
+#00ff88;
 
-0 0 15px #00ff88;
+
+
+}
+
+
+
+
+#nitro{
+
+
+font-size:13px;
+
+
+margin-top:5px;
+
+
+color:#00ccff;
 
 
 
@@ -202,33 +189,40 @@ text-shadow:
 
 
 
-
-
-/* Fullscreen Button */
-
-
 #fullscreen{
 
 
-width:100%;
+position:absolute;
 
 
-height:45px;
+right:8px;
+
+
+top:8px;
+
+
+
+width:35px;
+
+
+height:35px;
+
 
 
 border:none;
 
 
-border-radius:15px;
+border-radius:50%;
 
 
 
 background:
 
-linear-gradient(
-45deg,
-#00c6ff,
-#0072ff
+rgba(
+255,
+255,
+255,
+0.2
 );
 
 
@@ -236,46 +230,7 @@ linear-gradient(
 color:white;
 
 
-font-size:17px;
-
-
-font-weight:bold;
-
-
-
-cursor:pointer;
-
-
-
-transition:
-
-0.25s;
-
-
-
-box-shadow:
-
-0 0 15px
-
-rgba(
-0,
-150,
-255,
-0.5
-);
-
-
-
-}
-
-
-
-#fullscreen:active{
-
-
-transform:
-
-scale(0.92);
+font-size:18px;
 
 
 
@@ -287,10 +242,12 @@ scale(0.92);
 
 
 
-/* Mobile Buttons */
 
 
-#mobileControls{
+/* Lenkrad */
+
+
+#steering{
 
 
 position:absolute;
@@ -299,10 +256,101 @@ position:absolute;
 bottom:30px;
 
 
-left:0;
+left:30px;
 
 
-right:0;
+z-index:20;
+
+
+
+}
+
+
+
+#wheel{
+
+
+width:140px;
+
+
+height:140px;
+
+
+
+border-radius:50%;
+
+
+
+background:
+
+radial-gradient(
+circle,
+#555,
+#111
+);
+
+
+
+border:
+
+8px solid
+
+#333;
+
+
+
+display:flex;
+
+
+align-items:center;
+
+
+justify-content:center;
+
+
+
+font-size:55px;
+
+
+
+box-shadow:
+
+0 0 30px
+
+rgba(
+0,
+0,
+0,
+0.8
+);
+
+
+
+user-select:none;
+
+
+
+}
+
+
+
+
+
+
+
+/* Pedale */
+
+
+#pedals{
+
+
+position:absolute;
+
+
+right:30px;
+
+
+bottom:35px;
 
 
 z-index:20;
@@ -312,13 +360,10 @@ z-index:20;
 display:flex;
 
 
-justify-content:center;
+flex-direction:column;
 
 
-align-items:center;
-
-
-gap:15px;
+gap:20px;
 
 
 
@@ -327,46 +372,17 @@ gap:15px;
 
 
 
+#pedals button{
 
 
-#mobileControls button{
+width:90px;
 
 
-border:none;
-
-
-
-width:75px;
-
-
-height:75px;
+height:90px;
 
 
 
-border-radius:50%;
-
-
-
-font-size:18px;
-
-
-
-font-weight:bold;
-
-
-
-color:white;
-
-
-
-background:
-
-rgba(
-0,
-0,
-0,
-0.55
-);
+border-radius:25px;
 
 
 
@@ -383,6 +399,29 @@ rgba(
 
 
 
+background:
+
+rgba(
+0,
+0,
+0,
+0.65
+);
+
+
+
+color:white;
+
+
+
+font-size:18px;
+
+
+
+font-weight:bold;
+
+
+
 backdrop-filter:
 
 blur(10px);
@@ -391,7 +430,7 @@ blur(10px);
 
 box-shadow:
 
-0 0 20px
+0 0 25px
 
 rgba(
 0,
@@ -402,49 +441,21 @@ rgba(
 
 
 
-user-select:none;
-
-
-
 }
 
 
 
-
-#mobileControls button:active{
-
-
-transform:
-
-scale(0.85);
-
-
-
-}
-
-
-
-
-
-#boost{
+#gas{
 
 
 background:
 
 linear-gradient(
 45deg,
-#ff8800,
-#ff0000
+#00aa00,
+#00ff55
 )
 !important;
-
-
-
-box-shadow:
-
-0 0 25px
-
-orange;
 
 
 
@@ -459,8 +470,8 @@ background:
 
 linear-gradient(
 45deg,
-#555,
-#111
+#880000,
+#ff0000
 )
 !important;
 
@@ -470,13 +481,52 @@ linear-gradient(
 
 
 
+#pedals button:active{
 
 
-#left,
-#right{
+transform:
+
+scale(0.9);
 
 
-font-size:35px !important;
+
+    }
+/* style.css Teil 2 */
+/* Urban Drive Challenge V3 */
+
+
+
+/* Bildschirm Effekt */
+
+#game::after{
+
+
+content:"";
+
+
+position:absolute;
+
+
+inset:0;
+
+
+pointer-events:none;
+
+
+
+background:
+
+radial-gradient(
+circle,
+transparent 45%,
+rgba(
+0,
+0,
+0,
+0.4
+)
+);
+
 
 
 
@@ -488,17 +538,21 @@ font-size:35px !important;
 
 
 
+/* Querformat Optimierung */
+
+
 @media(
 orientation:portrait
 ){
 
 
-body::before{
+
+#game::before{
 
 
 content:
 
-"Bitte Handy drehen";
+"Bitte Gerät drehen";
 
 
 position:absolute;
@@ -516,6 +570,7 @@ background:#000;
 color:white;
 
 
+
 display:flex;
 
 
@@ -525,41 +580,12 @@ align-items:center;
 justify-content:center;
 
 
-font-size:30px;
+
+font-size:28px;
 
 
 
 }
-
-
-    }
-/* style.css Teil 2 */
-/* Datei: style.css */
-
-
-#game::after{
-
-content:"";
-
-position:absolute;
-
-inset:0;
-
-pointer-events:none;
-
-
-background:
-
-radial-gradient(
-circle,
-transparent 45%,
-rgba(
-0,
-0,
-0,
-0.45
-)
-);
 
 
 
@@ -571,33 +597,26 @@ rgba(
 
 
 
-/* Game Feeling verbessern */
+@media(
+orientation:landscape
+){
+
 
 
 #hud{
 
-animation:
 
-hudIn 1s ease;
-
+width:150px;
 
 
-}
+padding:8px;
 
 
 
-@keyframes hudIn{
+top:10px;
 
 
-from{
-
-
-opacity:0;
-
-
-transform:
-
-translateY(-40px);
+left:10px;
 
 
 
@@ -605,15 +624,44 @@ translateY(-40px);
 
 
 
-to{
+#speed{
 
 
-opacity:1;
+font-size:18px;
 
 
-transform:
 
-translateY(0);
+}
+
+
+
+#wheel{
+
+
+width:120px;
+
+
+height:120px;
+
+
+font-size:45px;
+
+
+
+}
+
+
+
+#pedals button{
+
+
+width:75px;
+
+
+height:75px;
+
+
+font-size:15px;
 
 
 
@@ -629,10 +677,68 @@ translateY(0);
 
 
 
-/* Boost Effekt */
+
+/* Lenkrad Animation */
 
 
-.boosting{
+#wheel{
+
+
+transition:
+
+transform
+0.1s ease;
+
+
+
+}
+
+
+
+
+
+
+/* Pedal Animation */
+
+
+#gas:active{
+
+
+box-shadow:
+
+0 0 35px
+
+#00ff55;
+
+
+
+}
+
+
+
+
+#brake:active{
+
+
+box-shadow:
+
+0 0 35px
+
+red;
+
+
+
+}
+
+
+
+
+
+
+/* Nitro Effekt */
+
+
+.nitro-active{
 
 
 filter:
@@ -647,224 +753,15 @@ contrast(1.2);
 
 
 
+/* Sprung Effekt */
 
 
-
-
-/* Landschaft Übergang */
-
-
-canvas{
-
-
-image-rendering:auto;
-
-
-}
-
-
-
-
-
-
-
-
-/* Querformat optimiert */
-
-
-@media(
-orientation:landscape
-){
-
-
-
-#hud{
-
-
-top:15px;
-
-
-left:15px;
-
-
-width:260px;
-
-
-
-}
-
-
-
-
-#hud h1{
-
-
-font-size:24px;
-
-
-}
-
-
-
-#speed{
-
-
-font-size:22px;
-
-
-}
-
-
-
-
-
-#mobileControls{
-
-
-bottom:25px;
-
-
-
-}
-
-
-
-#mobileControls button{
-
-
-width:85px;
-
-
-height:85px;
-
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-/* Kleine Geräte */
-
-
-@media(
-max-height:600px
-){
-
-
-#hud{
-
-
-padding:12px;
-
-
-}
-
-
-
-#mobileControls button{
-
-
-width:65px;
-
-
-height:65px;
-
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-/* Extra Premium UI */
-
-
-#fullscreen:hover{
-
-
-transform:
-
-scale(1.05);
-
-
-
-box-shadow:
-
-0 0 30px
-
-cyan;
-
-
-
-}
-
-
-
-
-
-/* Button Glanz */
-
-
-#mobileControls button::after{
-
-
-content:"";
-
-
-position:absolute;
-
-
-inset:0;
-
-
-border-radius:50%;
-
-
-background:
-
-linear-gradient(
-135deg,
-rgba(255,255,255,0.3),
-transparent
-);
-
-
-
-pointer-events:none;
-
-
-
-}
-
-
-
-
-
-
-/* Drift Vorbereitung */
-
-
-.drift{
+.airborne{
 
 
 animation:
 
-driftShake
+jumpShake
 0.15s
 infinite;
 
@@ -874,7 +771,7 @@ infinite;
 
 
 
-@keyframes driftShake{
+@keyframes jumpShake{
 
 
 0%{
@@ -882,11 +779,12 @@ infinite;
 
 transform:
 
-rotate(-1deg);
+rotate(-2deg);
 
 
 
 }
+
 
 
 50%{
@@ -894,11 +792,12 @@ rotate(-1deg);
 
 transform:
 
-rotate(1deg);
+rotate(2deg);
 
 
 
 }
+
 
 
 100%{
@@ -906,13 +805,14 @@ rotate(1deg);
 
 transform:
 
-rotate(-1deg);
+rotate(-2deg);
 
 
 
 }
 
 
+
 }
 
 
@@ -921,25 +821,159 @@ rotate(-1deg);
 
 
 
-/* Nitro Anzeige vorbereitet */
+/* Gebäude Schatten Atmosphäre */
 
 
-#nitro{
+canvas{
+
+
+image-rendering:auto;
+
+
+
+}
+
+
+
+
+
+
+
+/* Performance */
+
+
+*{
+
+
+-webkit-tap-highlight-color:transparent;
+
+
+user-select:none;
+
+
+}
+
+
+
+
+
+
+
+/* Kleine Ladeanimation */
+
+
+.loading{
 
 
 position:absolute;
 
 
-right:20px;
+inset:0;
 
 
-bottom:30px;
+background:#000;
 
 
-width:180px;
+z-index:200;
 
 
-height:20px;
+
+display:flex;
+
+
+align-items:center;
+
+
+justify-content:center;
+
+
+
+color:white;
+
+
+font-size:35px;
+
+
+
+}
+
+
+
+
+
+.loading span{
+
+
+animation:
+
+loadingPulse
+1s
+infinite;
+
+
+
+}
+
+
+
+
+@keyframes loadingPulse{
+
+
+0%{
+
+
+opacity:0.3;
+
+
+
+}
+
+
+
+50%{
+
+
+opacity:1;
+
+
+
+}
+
+
+
+100%{
+
+
+opacity:0.3;
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+/* Zukunft für Missionen */
+
+
+.mission{
+
+
+position:absolute;
+
+
+right:15px;
+
+
+top:15px;
 
 
 
@@ -949,84 +983,15 @@ rgba(
 0,
 0,
 0,
-0.5
+0.6
 );
 
 
 
-border-radius:20px;
+padding:15px;
 
 
-overflow:hidden;
-
-
-
-}
-
-
-
-#nitroFill{
-
-
-height:100%;
-
-
-width:100%;
-
-
-background:
-
-linear-gradient(
-90deg,
-cyan,
-blue
-);
-
-
-
-}
-
-
-
-
-
-
-
-/* Open World Menü vorbereitet */
-
-
-.menu{
-
-
-position:absolute;
-
-
-top:50%;
-
-
-left:50%;
-
-
-transform:
-
-translate(-50%,-50%);
-
-
-
-padding:40px;
-
-
-border-radius:25px;
-
-
-background:
-
-rgba(
-0,
-0,
-0,
-0.7
-);
+border-radius:15px;
 
 
 
@@ -1035,7 +1000,7 @@ color:white;
 
 backdrop-filter:
 
-blur(20px);
+blur(10px);
 
 
 
@@ -1047,36 +1012,35 @@ blur(20px);
 
 
 
-/* Verhindert Markieren */
+/* Checkpoint Anzeige */
 
 
-button{
+.checkpoint{
 
 
--webkit-user-select:none;
+width:60px;
 
 
-user-select:none;
+height:60px;
 
 
--webkit-touch-callout:none;
+border-radius:50%;
 
 
-}
+border:
+
+3px solid
+
+cyan;
 
 
 
+box-shadow:
 
+0 0 25px
 
+cyan;
 
-
-/* Performance für Handy */
-
-
-*{
-
-
--webkit-tap-highlight-color:transparent;
 
 
 }
