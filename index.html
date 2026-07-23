@@ -1,14 +1,843 @@
+<!-- index.html Teil 1 -->
+
 <!DOCTYPE html>
-<html>
+<html lang="de">
+
 <head>
-  <title>LED Steuerung</title>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Open World Car</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
 </head>
+
+
 <body>
 
-<h1>Smart Home</h1>
 
-<button onclick="fetch('/on')">Licht AN</button>
-<button onclick="fetch('/off')">Licht AUS</button>
+<div id="hud">
+
+    <h1>OPEN WORLD DRIVE</h1>
+
+    <div id="speed">
+        Geschwindigkeit: 0 km/h
+    </div>
+
+    <div id="controls">
+        WASD = Fahren<br>
+        W = Gas<br>
+        S = Rückwärts/Bremse<br>
+        A/D = Lenken<br>
+        SPACE = Handbremse<br>
+        SHIFT = Turbo
+    </div>
+
+</div>
+
+
+<div id="game"></div>
+
+
+
+<script>
+
+
+let scene;
+let camera;
+let renderer;
+
+let car;
+
+let velocity = 0;
+let steering = 0;
+
+let keys = {};
+
+let wheels = [];
+
+let worldObjects = [];
+
+
+
+function startGame(){
+
+
+scene = new THREE.Scene();
+
+scene.background =
+new THREE.Color(0x78c8ff);
+
+
+
+camera =
+new THREE.PerspectiveCamera(
+75,
+window.innerWidth/window.innerHeight,
+0.1,
+5000
+);
+
+
+
+renderer =
+new THREE.WebGLRenderer({
+antialias:true
+});
+
+
+renderer.setSize(
+window.innerWidth,
+window.innerHeight
+);
+
+
+renderer.shadowMap.enabled=true;
+
+
+document
+.getElementById("game")
+.appendChild(renderer.domElement);
+
+
+
+
+let sun =
+new THREE.DirectionalLight(
+0xffffff,
+2
+);
+
+
+sun.position.set(
+200,
+300,
+100
+);
+
+
+sun.castShadow=true;
+
+
+scene.add(sun);
+
+
+
+scene.add(
+new THREE.AmbientLight(
+0xffffff,
+0.5
+)
+);
+
+
+
+createWorld();
+
+createCar();
+
+
+
+camera.position.set(
+0,
+8,
+15
+);
+
+
+
+animate();
+
+
+}
+
+
+
+
+function createWorld(){
+
+
+
+let ground =
+new THREE.Mesh(
+
+new THREE.PlaneGeometry(
+3000,
+3000
+),
+
+new THREE.MeshStandardMaterial({
+color:0x3c963c
+})
+
+);
+
+
+
+ground.rotation.x =
+-Math.PI/2;
+
+
+ground.receiveShadow=true;
+
+
+scene.add(ground);
+
+
+
+
+
+// Hauptstraßen
+
+
+createRoad(
+0,
+0,
+40,
+1200
+);
+
+
+createRoad(
+0,
+0,
+1200,
+40
+);
+
+
+
+// Stadt erstellen
+
+
+for(
+let x=-400;
+x<=400;
+x+=60
+){
+
+for(
+let z=-400;
+z<=400;
+z+=60
+){
+
+
+if(
+Math.abs(x)<80 &&
+Math.abs(z)<80
+)
+continue;
+
+
+createBuilding(
+x,
+z
+);
+
+
+}
+
+}
+
+
+
+}
+
+
+
+
+function createRoad(
+x,
+z,
+width,
+length
+){
+
+
+
+let road =
+new THREE.Mesh(
+
+new THREE.BoxGeometry(
+width,
+0.1,
+length
+),
+
+new THREE.MeshStandardMaterial({
+color:0x202020
+})
+
+);
+
+
+
+road.position.set(
+x,
+0.05,
+z
+);
+
+
+
+scene.add(road);
+
+
+
+
+
+for(
+let i=-length/2;
+i<length/2;
+i+=15
+){
+
+
+let line =
+new THREE.Mesh(
+
+new THREE.BoxGeometry(
+0.3,
+0.03,
+5
+),
+
+new THREE.MeshBasicMaterial({
+color:0xffff00
+})
+
+);
+
+
+
+if(width>length){
+
+line.position.set(
+x+i,
+0.12,
+z
+);
+
+
+}
+
+else{
+
+
+line.position.set(
+x,
+0.12,
+z+i
+);
+
+
+}
+
+
+
+scene.add(line);
+
+
+
+}
+
+
+
+}
+
+
+
+
+function createBuilding(
+x,
+z
+){
+
+
+
+let height =
+Math.random()*80+20;
+
+
+
+let building =
+new THREE.Mesh(
+
+new THREE.BoxGeometry(
+25,
+height,
+25
+),
+
+new THREE.MeshStandardMaterial({
+
+color:
+new THREE.Color(
+Math.random(),
+Math.random(),
+Math.random()
+)
+
+})
+
+);
+
+
+
+building.position.set(
+x,
+height/2,
+z
+);
+
+
+building.castShadow=true;
+
+
+scene.add(building);
+
+
+worldObjects.push(building);
+
+
+
+}
+
+
+
+
+function createCar(){
+
+
+car =
+new THREE.Group();
+
+
+
+// Karosserie
+
+
+let body =
+new THREE.Mesh(
+
+new THREE.BoxGeometry(
+4,
+1,
+8
+),
+
+new THREE.MeshStandardMaterial({
+color:0xff2222
+})
+
+);
+
+
+
+body.position.y=1;
+
+
+body.castShadow=true;
+
+
+car.add(body);
+
+
+
+
+// Dach
+
+
+let roof =
+new THREE.Mesh(
+
+new THREE.BoxGeometry(
+3,
+1,
+3
+),
+
+new THREE.MeshStandardMaterial({
+color:0x111111
+})
+
+);
+
+
+
+roof.position.y=2;
+
+
+car.add(roof);
+
+
+
+
+// Räder
+
+
+addWheel(-2,1,-2.5);
+addWheel(2,1,-2.5);
+addWheel(-2,1,2.5);
+addWheel(2,1,2.5);
+
+
+
+scene.add(car);
+
+
+
+}
+
+
+
+
+function addWheel(
+x,
+y,
+z
+){
+
+
+let wheel =
+new THREE.Mesh(
+
+new THREE.CylinderGeometry(
+0.8,
+0.8,
+0.5,
+20
+),
+
+new THREE.MeshStandardMaterial({
+color:0x050505
+})
+
+);
+
+
+
+wheel.rotation.z=
+Math.PI/2;
+
+
+wheel.position.set(
+x,
+y,
+z
+);
+
+
+
+car.add(wheel);
+
+
+wheels.push(wheel);
+
+
+
+}
+
+
+
+
+
+window.addEventListener(
+"keydown",
+e=>{
+
+keys[e.key.toLowerCase()]=true;
+
+}
+);
+
+
+
+window.addEventListener(
+"keyup",
+e=>{
+
+keys[e.key.toLowerCase()]=false;
+
+}
+);
+  <!-- index.html Teil 2 -->
+
+
+function updateCar(){
+
+
+
+// Gas
+
+if(keys["w"]){
+
+    velocity += 0.015;
+
+}
+
+
+// Rückwärts / Bremse
+
+if(keys["s"]){
+
+    velocity -= 0.02;
+
+}
+
+
+// Reibung
+
+if(
+!keys["w"] &&
+!keys["s"]
+){
+
+    velocity *= 0.97;
+
+}
+
+
+
+// Turbo
+
+if(keys["shift"]){
+
+    velocity *= 1.01;
+
+}
+
+
+
+// Handbremse
+
+if(keys[" "]){
+
+    velocity *= 0.85;
+
+}
+
+
+
+// Geschwindigkeitslimit
+
+velocity =
+Math.max(
+Math.min(
+velocity,
+1.2
+),
+-0.5
+);
+
+
+
+
+// Lenken
+
+if(keys["a"]){
+
+    steering += 0.025;
+
+}
+
+
+if(keys["d"]){
+
+    steering -= 0.025;
+
+}
+
+
+
+// automatische Rückstellung
+
+steering *= 0.95;
+
+
+
+car.rotation.y +=
+steering *
+velocity *
+0.8;
+
+
+
+// Bewegung
+
+
+car.position.x -=
+Math.sin(
+car.rotation.y
+)
+*
+velocity
+*
+4;
+
+
+
+car.position.z -=
+Math.cos(
+car.rotation.y
+)
+*
+velocity
+*
+4;
+
+
+
+
+
+
+// Räder drehen
+
+
+wheels.forEach(
+wheel=>{
+
+wheel.rotation.x +=
+velocity;
+
+}
+
+);
+
+
+
+
+// Kamera folgt Auto
+
+
+let targetCamera =
+new THREE.Vector3(
+
+car.position.x +
+Math.sin(
+car.rotation.y
+)
+*
+12,
+
+
+7,
+
+
+car.position.z +
+Math.cos(
+car.rotation.y
+)
+*
+12
+
+);
+
+
+
+camera.position.lerp(
+targetCamera,
+0.08
+);
+
+
+
+camera.lookAt(
+car.position
+);
+
+
+
+
+// HUD
+
+document.getElementById(
+"speed"
+)
+.innerHTML =
+
+"Geschwindigkeit: "
++
+Math.round(
+Math.abs(velocity*180)
+)
++
+" km/h";
+
+
+
+}
+
+
+
+
+
+function animate(){
+
+
+requestAnimationFrame(
+animate
+);
+
+
+
+updateCar();
+
+
+
+renderer.render(
+scene,
+camera
+);
+
+
+}
+
+
+
+
+
+window.addEventListener(
+"resize",
+()=>{
+
+
+camera.aspect =
+window.innerWidth /
+window.innerHeight;
+
+
+camera.updateProjectionMatrix();
+
+
+
+renderer.setSize(
+window.innerWidth,
+window.innerHeight
+);
+
+
+
+}
+
+);
+
+
+
+
+
+startGame();
+
+
+
+</script>
+
 
 </body>
+
 </html>
